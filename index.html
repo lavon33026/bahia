@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Bahia Ops">
+<meta name="theme-color" content="#5B1F5E">
+<title>Bahia Bowls Ops</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Rubik:wght@400;500;600&display=swap">
+<style>
+/* Layout: one-column phone app — sticky brand bar, scrolling view, bottom tab bar; centered 720px column on desktop */
+:root{
+  --bg:#FBF7FA; --surface:#FFFFFF; --sunk:#F3ECF2; --ink:#2A1630; --muted:#76627A; --line:#E7DCE6;
+  --acai:#5B1F5E; --on-acai:#FFFFFF; --mango:#E8922A; --mango-soft:#FCEBD3; --leaf:#2D7A57; --leaf-soft:#DDF0E6;
+  --danger:#B8402B; --danger-soft:#F8E1DB;
+  --f-display:"Bricolage Grotesque","Rubik",system-ui,sans-serif;
+  --f-body:"Rubik",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --r:12px; color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#150B17; --surface:#20142A; --sunk:#1A1020; --ink:#F4EAF3; --muted:#B5A2B8; --line:#3A2A40;
+  --acai:#D8A0E0; --on-acai:#1A0B1C; --mango:#F3B45E; --mango-soft:#3A2913; --leaf:#72C99E; --leaf-soft:#173126;
+  --danger:#F08A73; --danger-soft:#3D1B15; color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45;-webkit-text-size-adjust:100%}
+button,input,select,textarea{font:inherit;color:inherit}
+img{max-width:100%}
+[hidden]{display:none!important}
+.wrap{max-width:720px;margin:0 auto;padding-inline:16px;padding-block:0 110px}
+.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.top .in{max-width:720px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:10px}
+.brand{font-family:var(--f-display);font-weight:800;font-size:20px;letter-spacing:-.01em;color:var(--acai);line-height:1}
+.brand small{display:block;font-family:var(--f-body);font-weight:500;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.top .sp{flex:1}
+.chipbtn{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:13px;cursor:pointer}
+.tabs{position:fixed;bottom:0;left:0;right:0;z-index:5;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+.tabs .in{max-width:720px;margin:0 auto;display:flex}
+.tabs button{flex:1;border:0;background:none;padding:10px 4px 12px;font-size:12px;color:var(--muted);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px}
+.tabs button svg{width:22px;height:22px}
+.tabs button[aria-current="page"]{color:var(--acai);font-weight:600}
+h1{font-family:var(--f-display);font-weight:800;font-size:26px;line-height:1.15;margin:20px 0 4px;text-wrap:balance;letter-spacing:-.01em}
+h2{font-family:var(--f-display);font-weight:600;font-size:18px;margin:0;text-wrap:balance}
+.sub{color:var(--muted);margin:0 0 16px}
+.stack{display:flex;flex-direction:column;gap:12px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.panel-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.panel-h .sp{flex:1}
+.lbl{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.row{display:flex;align-items:center;gap:12px;padding:12px 4px;border-top:1px solid var(--line);min-width:0}
+.row:first-child{border-top:0}
+.row .grow{flex:1;min-width:0}
+.row .t{font-weight:500;overflow-wrap:anywhere}
+.row .m{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.list{display:flex;flex-direction:column}
+.tap{cursor:pointer;border-radius:8px}
+.tap:hover{background:var(--sunk)}
+.pill{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:500;border-radius:999px;padding:2px 9px;white-space:nowrap;background:var(--sunk);color:var(--muted)}
+.pill.ok{background:var(--leaf-soft);color:var(--leaf)}
+.pill.warn{background:var(--mango-soft);color:var(--mango)}
+.pill.bad{background:var(--danger-soft);color:var(--danger)}
+.check{width:28px;height:28px;border-radius:50%;border:2px solid var(--line);flex:none;display:grid;place-items:center}
+.check.done{background:var(--leaf);border-color:var(--leaf);color:var(--surface)}
+.check svg{width:16px;height:16px}
+.btn{border:0;border-radius:10px;padding:12px 16px;font-weight:600;cursor:pointer;background:var(--acai);color:var(--on-acai)}
+.btn.ghost{background:var(--sunk);color:var(--ink)}
+.btn.danger{background:var(--danger-soft);color:var(--danger)}
+.btn.sm{padding:7px 12px;font-size:13px}
+.btn.wide{width:100%}
+.btn:disabled{opacity:.55;cursor:default}
+.btn:focus-visible,.chipbtn:focus-visible,.tabs button:focus-visible,.tap:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--mango);outline-offset:2px}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+.seg{display:flex;gap:4px;background:var(--sunk);border-radius:10px;padding:4px;overflow-x:auto}
+.seg button{flex:1;border:0;background:none;border-radius:8px;padding:8px 10px;font-size:13px;cursor:pointer;color:var(--muted);white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);font-weight:600}
+.meter{height:8px;border-radius:99px;background:var(--sunk);overflow:hidden}
+.meter i{display:block;height:100%;background:var(--leaf);border-radius:99px}
+.empty{color:var(--muted);text-align:center;padding:20px 8px;font-size:14px}
+.thumbs{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.thumbs img{width:56px;height:56px;object-fit:cover;border-radius:8px;cursor:pointer;background:var(--sunk)}
+.num{font-variant-numeric:tabular-nums}
+.cnt{display:grid;grid-template-columns:1fr auto;gap:8px 12px;align-items:center}
+.cnt input{width:92px;text-align:center;padding:10px 6px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font-variant-numeric:tabular-nums}
+.cnt input.low{border-color:var(--danger);background:var(--danger-soft)}
+form.f{display:flex;flex-direction:column;gap:14px}
+.fld{display:flex;flex-direction:column;gap:6px;min-width:0}
+.fld label,.fld .lab{font-size:13px;font-weight:500}
+.hint{font-size:12px;color:var(--muted)}
+.fld input,.fld select,.fld textarea{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font-size:16px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:420px){.two{grid-template-columns:1fr}}
+.days{display:flex;flex-wrap:wrap;gap:6px}
+.days label{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:6px 11px;font-size:13px;cursor:pointer}
+.sect{font-family:var(--f-display);font-weight:600;font-size:15px;color:var(--acai);margin-top:6px;padding-top:12px;border-top:1px dashed var(--line)}
+.priv{background:var(--sunk);border-radius:10px;padding:12px;font-size:13px;color:var(--muted)}
+.scrim{position:fixed;inset:0;z-index:20;background:rgba(20,8,22,.45);display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--bg);width:100%;max-width:640px;max-height:92%;overflow:auto;border-radius:18px 18px 0 0;padding:18px 16px calc(24px + env(safe-area-inset-bottom,0px))}
+@media (min-width:700px){.scrim{align-items:center}.sheet{border-radius:18px}}
+.sheet-h{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.sheet-h h2{flex:1}
+.x{border:0;background:var(--sunk);border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:18px;line-height:1}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:14px;z-index:30;max-width:calc(100% - 32px)}
+.daygrp{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:14px 0 2px}
+.bigimg{width:100%;min-height:120px;border-radius:12px;background:var(--sunk)}
+.callout{border-inline-start:4px solid var(--mango);background:var(--mango-soft);border-radius:8px;padding:12px;font-size:14px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:14px;margin:0}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;overflow-wrap:anywhere}
+.camera{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border:2px dashed var(--acai);border-radius:12px;padding:22px;cursor:pointer;color:var(--acai);font-weight:600;text-align:center}
+.camera svg{width:34px;height:34px}
+.camera input{position:absolute;width:1px;height:1px;opacity:0}
+.login{max-width:420px;margin:0 auto;padding-top:24px}
+.code{letter-spacing:.4em;text-align:center;font-size:24px!important;font-variant-numeric:tabular-nums}
+.big{font-family:var(--f-display);font-weight:800;font-size:34px;letter-spacing:.15em;color:var(--acai)}
+@media (prefers-reduced-motion:no-preference){.sheet{animation:up .18s ease-out}@keyframes up{from{transform:translateY(16px);opacity:.6}}}
+</style>
+</head>
+<body>
+<header class="top"><div class="in">
+  <div class="brand">Bahia Bowls<small id="loc">Cooper City · Ops</small></div>
+  <div class="sp"></div>
+  <button class="chipbtn" id="langBtn" type="button">English</button>
+</div></header>
+<main class="wrap" id="view"><h1>Bahia Bowls</h1><p class="sub">…</p></main>
+<nav class="tabs" id="tabs" hidden aria-label="Sections"><div class="in" id="tabsIn"></div></nav>
+<div id="sheetRoot"></div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(function(){
+"use strict";
+/* ---------- i18n ---------- */
+var L={
+en:{loading:"Loading…",today:"Today",tasks:"Tasks",inventory:"Inventory",team:"Team",history:"History",myTasks:"My tasks",profile:"Profile",
+hi:"Hi {n}",signin:"Sign in",signinSub:"Enter your email and we'll send you a 6-digit code.",email:"Email",sendCode:"Send code",
+codeSent:"We sent a code to {e}. It works for 10 minutes.",code:"Code",verify:"Sign in",otherEmail:"Use a different email",resend:"Send a new code",
+err_bad_email:"That email address doesn't look right.",err_bad_code:"That code is wrong or expired.",err_too_many:"Too many tries. Wait 15 minutes and try again.",
+err_bad_join:"The join code is wrong. Ask the manager for the store's join code.",err_need_photo:"Take a photo to finish this task.",err_already_done:"Someone already marked this task done.",
+err_not_allowed:"You don't have access to this.",err_missing:"Fill in the required fields.",err_generic:"Something went wrong. Try again.",
+inactiveMsg:"Your account is not active. Talk to the manager.",signout:"Sign out",
+regTitle:"Welcome to the team",regSub:"Fill this in once so the manager can reach you and schedule shifts.",joinCode:"Store join code",joinHint:"The 4-digit code the manager gave you.",
+first:"First name",last:"Last name",phone:"Mobile phone",position:"Position",start:"Start date",dob:"Date of birth",
+street:"Street address",city:"City",state:"State",zip:"ZIP",ssn4:"SSN – last 4 digits",ssnHint:"Only the last 4 digits. Your full SSN goes on your W-4 through payroll, never here.",
+emName:"Emergency contact name",emRel:"Relationship",emPhone:"Emergency contact phone",avail:"Days you can work",shift:"Preferred shift",
+shiftAny:"Any",shiftAM:"Morning",shiftPM:"Afternoon / evening",langPref:"Preferred language",shirt:"Uniform shirt size",
+foodCert:"Florida food handler certificate",certYes:"Yes, I have one",certNo:"Not yet",certExp:"Certificate expires",notes:"Anything the manager should know",
+privNote:"Contact details are visible to the managers. Birth date, address, SSN digits and emergency contact are visible only to the owner.",
+secContact:"Contact",secWork:"Work",secPrivate:"Private – owner only",save:"Save",saved:"Saved",cancel:"Cancel",del:"Delete",confirmDel:"Tap again to delete",
+pos_crew:"Crew member",pos_lead:"Shift lead",pos_prep:"Kitchen prep",pos_cash:"Cashier",pos_mgr:"Manager",
+weekly:"Weekly",oneOff:"One-time",allDone:"All done for today. Nice work.",noTasks:"No tasks for you right now.",
+taskDone:"Done",markDone:"Mark as done",doneBy:"{n} · {t}",photo:"Photo",photoReq:"Photo required",takePhoto:"Take a photo",retake:"Change photo",note:"Note (optional)",
+undo:"Undo",uploading:"Saving…",photoRule:"Every task needs a photo before it can be marked done.",
+invCard:"Inventory",countedAt:"Counted today at {t} by {n}",notCounted:"Not counted yet today",countNow:"Count now",
+lowItems:"Below reorder level",noLow:"Everything is above its reorder level.",orderSugg:"Order {q} {u}",
+progress:"{a} of {b} done",tasksToday:"Today's tasks",pendingOrders:"Order drafts waiting for approval",
+count:"Daily count",items:"Items",suppliers:"Suppliers",orders:"Orders",saveCount:"Save today's count",countSaved:"Count saved",
+reorderAt:"Reorder at",par:"Fill up to",unit:"Unit",supplier:"Supplier",category:"Category",name:"Name",active:"Active",
+addItem:"Add item",addSupplier:"Add supplier",editItem:"Edit item",editSupplier:"Edit supplier",
+noItems:"No items yet. Add them here, or send the inventory spreadsheet and they will be imported.",
+noSuppliers:"No suppliers yet. Add each supplier with the email orders go to.",
+contact:"Contact person",orderNotes:"Ordering notes",orderNotesHint:"Delivery days, minimum order, account number…",
+last:"Last",none:"—",noSupplier:"No supplier",
+noOrders:"No orders yet. Each morning Claude checks the latest count and prepares order emails for the owner to approve.",
+st_draft:"Waiting for approval",st_sent:"Sent",st_cancelled:"Cancelled",markSent:"Mark sent",markCancelled:"Cancel order",
+addTask:"New task",editTask:"Edit task",title:"Task",details:"Instructions",assignee:"Assigned to",anyone:"Anyone on shift",
+freq:"Repeats",daily:"Every day",weeklyF:"Once a week",once:"One time",dueDate:"Due date",
+noTasksMgr:"No tasks yet. Add the opening, closing and weekly cleaning routines.",
+staff:"Staff",inactive:"Inactive",manager:"Manager access",managerHint:"Lets this person manage tasks and inventory and see the team.",
+inviteTitle:"Adding employees",inviteBody:"Send employees this page's link and the join code below. They sign in with their email and fill in the form once.",
+noStaff:"Nobody has registered yet.",regOn:"Registered",
+hist7:"7 days",hist30:"30 days",histAll:"All",everyone:"Everyone",noHist:"Nothing recorded in this period yet.",
+evCount:"Inventory counted",evCountM:"{n} items, {l} low",evReg:"joined the team",evOrder:"Order prepared for {s}",
+owner:"Owner",myHist:"What I've done",byMe:"Your completed tasks"},
+he:{loading:"טוען…",today:"היום",tasks:"משימות",inventory:"מלאי",team:"צוות",history:"היסטוריה",myTasks:"המשימות שלי",profile:"פרופיל",
+hi:"היי {n}",signin:"כניסה",signinSub:"הקלידו את המייל שלכם ונשלח קוד בן 6 ספרות.",email:"מייל",sendCode:"שליחת קוד",
+codeSent:"שלחנו קוד ל-{e}. הוא בתוקף ל-10 דקות.",code:"קוד",verify:"כניסה",otherEmail:"מייל אחר",resend:"שליחת קוד חדש",
+err_bad_email:"כתובת המייל לא נראית תקינה.",err_bad_code:"הקוד שגוי או שפג תוקפו.",err_too_many:"יותר מדי ניסיונות. נסו שוב בעוד 15 דקות.",
+err_bad_join:"קוד ההצטרפות שגוי. בקשו מהמנהלת את קוד ההצטרפות של החנות.",err_need_photo:"צריך לצלם תמונה כדי לסיים את המשימה.",err_already_done:"מישהו כבר סימן את המשימה כבוצעה.",
+err_not_allowed:"אין לך הרשאה לזה.",err_missing:"צריך למלא את שדות החובה.",err_generic:"משהו השתבש. נסו שוב.",
+inactiveMsg:"החשבון שלך לא פעיל. דברו עם המנהלת.",signout:"יציאה",
+regTitle:"ברוכים הבאים לצוות",regSub:"ממלאים פעם אחת כדי שהמנהלת תוכל ליצור קשר ולשבץ משמרות.",joinCode:"קוד הצטרפות לחנות",joinHint:"הקוד בן 4 הספרות שקיבלתם מהמנהלת.",
+first:"שם פרטי",last:"שם משפחה",phone:"טלפון נייד",position:"תפקיד",start:"תאריך התחלה",dob:"תאריך לידה",
+street:"כתובת",city:"עיר",state:"מדינה",zip:"מיקוד",ssn4:"SSN – 4 ספרות אחרונות",ssnHint:"רק 4 הספרות האחרונות. ה-SSN המלא נמסר בטופס W-4 דרך מערכת השכר, לא כאן.",
+emName:"איש קשר לחירום",emRel:"קרבה",emPhone:"טלפון איש קשר לחירום",avail:"ימים שאפשר לעבוד",shift:"משמרת מועדפת",
+shiftAny:"לא משנה",shiftAM:"בוקר",shiftPM:"צהריים / ערב",langPref:"שפה מועדפת",shirt:"מידת חולצה",
+foodCert:"תעודת Food Handler של פלורידה",certYes:"יש לי",certNo:"עדיין אין",certExp:"תוקף התעודה",notes:"משהו שהמנהלת צריכה לדעת",
+privNote:"פרטי הקשר גלויים למנהלים. תאריך לידה, כתובת, ספרות SSN ואיש קשר לחירום גלויים לבעלים בלבד.",
+secContact:"פרטי קשר",secWork:"עבודה",secPrivate:"פרטי – לבעלים בלבד",save:"שמירה",saved:"נשמר",cancel:"ביטול",del:"מחיקה",confirmDel:"לחצו שוב למחיקה",
+pos_crew:"עובד/ת צוות",pos_lead:"אחראי/ת משמרת",pos_prep:"הכנות מטבח",pos_cash:"קופה",pos_mgr:"מנהל/ת",
+weekly:"שבועי",oneOff:"חד-פעמי",allDone:"הכל בוצע להיום. כל הכבוד.",noTasks:"אין לך משימות כרגע.",
+taskDone:"בוצע",markDone:"סימון כבוצע",doneBy:"{n} · {t}",photo:"תמונה",photoReq:"חובה תמונה",takePhoto:"צילום תמונה",retake:"החלפת תמונה",note:"הערה (לא חובה)",
+undo:"ביטול סימון",uploading:"שומר…",photoRule:"כל משימה דורשת תמונה לפני סימון כבוצעה.",
+invCard:"מלאי",countedAt:"נספר היום ב-{t} ע״י {n}",notCounted:"עדיין לא נספר היום",countNow:"לספירה",
+lowItems:"מתחת לרמת הזמנה",noLow:"כל הפריטים מעל רמת ההזמנה.",orderSugg:"להזמין {q} {u}",
+progress:"{a} מתוך {b} בוצעו",tasksToday:"משימות היום",pendingOrders:"טיוטות הזמנה שמחכות לאישור",
+count:"ספירה יומית",items:"פריטים",suppliers:"ספקים",orders:"הזמנות",saveCount:"שמירת ספירת היום",countSaved:"הספירה נשמרה",
+reorderAt:"להזמין כשיורד ל-",par:"להשלים עד",unit:"יחידה",supplier:"ספק",category:"קטגוריה",name:"שם",active:"פעיל",
+addItem:"הוספת פריט",addSupplier:"הוספת ספק",editItem:"עריכת פריט",editSupplier:"עריכת ספק",
+noItems:"אין עדיין פריטים. אפשר להוסיף כאן, או לשלוח את קובץ האקסל והפריטים ייובאו.",
+noSuppliers:"אין עדיין ספקים. הוסיפו כל ספק עם המייל שאליו נשלחות הזמנות.",
+contact:"איש קשר",orderNotes:"הערות הזמנה",orderNotesHint:"ימי אספקה, מינימום הזמנה, מספר לקוח…",
+last:"אחרון",none:"—",noSupplier:"ללא ספק",
+noOrders:"אין עדיין הזמנות. בכל בוקר Claude בודק את הספירה האחרונה ומכין מיילי הזמנה לאישור הבעלים.",
+st_draft:"ממתין לאישור",st_sent:"נשלח",st_cancelled:"בוטל",markSent:"סימון כנשלח",markCancelled:"ביטול הזמנה",
+addTask:"משימה חדשה",editTask:"עריכת משימה",title:"משימה",details:"הוראות",assignee:"אחראי/ת",anyone:"מי שבמשמרת",
+freq:"תדירות",daily:"כל יום",weeklyF:"פעם בשבוע",once:"חד-פעמי",dueDate:"תאריך יעד",
+noTasksMgr:"אין עדיין משימות. הוסיפו את שגרות הפתיחה, הסגירה והניקיון השבועי.",
+staff:"עובדים",inactive:"לא פעיל",manager:"הרשאת מנהל/ת",managerHint:"מאפשר לנהל משימות ומלאי ולראות את הצוות.",
+inviteTitle:"הוספת עובדים",inviteBody:"שלחו לעובדים את הלינק של הדף הזה ואת קוד ההצטרפות שלמטה. הם נכנסים עם המייל שלהם וממלאים את הטופס פעם אחת.",
+noStaff:"עדיין אף אחד לא נרשם.",regOn:"נרשם/ה",
+hist7:"7 ימים",hist30:"30 יום",histAll:"הכל",everyone:"כולם",noHist:"אין עדיין תיעוד בתקופה הזו.",
+evCount:"ספירת מלאי",evCountM:"{n} פריטים, {l} חסרים",evReg:"הצטרף/ה לצוות",evOrder:"הוכנה הזמנה ל-{s}",
+owner:"בעלים",myHist:"מה שביצעתי",byMe:"המשימות שסיימת"}
+};
+function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){return null}}
+var lang=ls("bb_lang")||((navigator.language||"").toLowerCase().indexOf("he")===0?"he":"en");
+function t(k,v){var s=(L[lang]&&L[lang][k])||L.en[k]||k;if(v)for(var x in v)s=s.split("{"+x+"}").join(v[x]);return s}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function applyLang(){document.documentElement.lang=lang;document.documentElement.dir=lang==="he"?"rtl":"ltr";document.getElementById("langBtn").textContent=lang==="he"?"English":"עברית"}
+function errMsg(e){var c=String((e&&e.message)||e||"");return L.en["err_"+c]?t("err_"+c):t("err_generic")}
+
+/* ---------- dates ---------- */
+var TZ="America/New_York";
+function loc(){return lang==="he"?"he-IL":"en-US"}
+function fmtTime(iso){try{return new Date(iso).toLocaleTimeString(loc(),{timeZone:TZ,hour:"numeric",minute:"2-digit"})}catch(e){return ""}}
+function fmtDay(key){try{return new Date(key+"T12:00:00Z").toLocaleDateString(loc(),{timeZone:"UTC",weekday:"long",month:"short",day:"numeric"})}catch(e){return key}}
+function fmtDateShort(key){try{return new Date(key+"T12:00:00Z").toLocaleDateString(loc(),{timeZone:"UTC",month:"short",day:"numeric",year:"numeric"})}catch(e){return key}}
+
+/* ---------- server ---------- */
+var token=ls("bb_token");
+var EXEC="https://script.google.com/macros/s/AKfycbxv49K-Ppbk8B5VraIBQf5ZAUXxuFHmViJsa4KtkBWEAfBZmni3m4sEwojQ-5DhIQQqdg/exec";
+function gs(fn){var args=Array.prototype.slice.call(arguments,1);
+  return fetch(EXEC,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({fn:fn,args:args}),credentials:"omit",redirect:"follow"})
+    .then(function(r){if(!r.ok)throw new Error("generic");return r.json()})
+    .then(function(o){if(o.ok)return o.data;throw new Error(o.error)},function(e){if(e&&e.message&&L.en["err_"+e.message])throw e;throw new Error("generic")})}
+function api(a,p){return gs("api",token,a,p||{}).catch(function(e){if(String(e&&e.message)==="signed_out"){token=null;ls("bb_token",null);D=null;S.screen="login";render(true)}throw e})}
+
+/* ---------- state ---------- */
+var D=null; // data from server
+var S={screen:"loading",tab:null,loginEmail:ls("bb_email")||"",codeSent:false,invTab:"count",histRange:"7",histWho:"",hist:null,countDraft:null,delArm:null,busy:false};
+var photoCache={};
+var icons={
+today:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>',
+tasks:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 6h11M9 12h11M9 18h11"/><path d="m3.5 6 1.5 1.5L7.5 5M3.5 12l1.5 1.5 2.5-2.5M3.5 18l1.5 1.5 2.5-2.5"/></svg>',
+inventory:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8.5 12 4l8 4.5v7L12 20l-8-4.5z"/><path d="M4 8.5 12 13l8-4.5M12 13v7"/></svg>',
+team:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8.5" r="3.2"/><path d="M3.5 19c.6-3 2.8-4.6 5.5-4.6s4.9 1.6 5.5 4.6"/><circle cx="17" cy="9.5" r="2.4"/><path d="M15.5 14.6c2.3-.3 4.3.9 5 3.6"/></svg>',
+history:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12a8 8 0 1 0 2.4-5.7L4 8.5"/><path d="M4 4v4.5h4.5M12 8v4.5l3 2"/></svg>',
+profile:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8.5" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.6 7-5.6s6.2 2 7 5.6"/></svg>',
+check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>',
+camera:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8h3l2-2.5h6L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.6"/></svg>'};
+
+function role(){return D&&D.me.role}
+function isMgr(){return role()==="owner"||role()==="manager"}
+function isOwner(){return role()==="owner"}
+function staffList(){return (D&&D.staff)||[]}
+function nameOf(email,fallback){if(!email)return fallback||"";var n=D&&D.names&&D.names[email];return n||fallback||(email===(D&&D.me.email)?D.me.name:email)}
+function toast(msg){var el=document.getElementById("toast");el.textContent=msg;el.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(function(){el.hidden=true},2800)}
+
+/* ---------- tasks logic ---------- */
+function periodOf(task){return task.freq==="daily"?D.today:task.freq==="weekly"?D.week:"once"}
+function compFor(task){var id=task.id+"__"+periodOf(task);for(var i=0;i<D.completions.length;i++)if(D.completions[i].id===id)return D.completions[i];return null}
+function dueTasks(forEmail){var out=[];
+  D.tasks.forEach(function(task){if(!task.active)return;if(forEmail&&task.assignee!==forEmail&&task.assignee!=="any")return;
+    if(task.freq==="once"){if(task.dueDate&&task.dueDate>D.today)return;if(task.completedOn&&task.completedOn!==D.today)return}
+    out.push({task:task,comp:compFor(task)})});
+  var order={daily:0,weekly:1,once:2};
+  out.sort(function(a,b){return ((a.comp?1:0)-(b.comp?1:0))||(order[a.task.freq]-order[b.task.freq])||String(a.task.title).localeCompare(String(b.task.title))});
+  return out}
+
+/* ---------- inventory logic ---------- */
+function itemsMap(){var m={};(D.items||[]).forEach(function(i){m[i.id]=i});return m}
+function supMap(){var m={};(D.suppliers||[]).forEach(function(s){m[s.id]=s});return m}
+function hasMin(it){return it&&it.minLevel!==""&&it.minLevel!==undefined&&it.minLevel!==null}
+function latestValue(itemId){var cs=D.counts||[];for(var i=0;i<cs.length;i++){var v=cs[i].values[itemId];if(v!==undefined&&v!==null&&v!=="")return {v:Number(v),date:cs[i].date}}return null}
+function lowList(){var out=[];(D.items||[]).forEach(function(it){if(!it.active)return;var lv=latestValue(it.id);if(!lv||!hasMin(it))return;
+  if(lv.v<=Number(it.minLevel)){var q=Math.max(Math.ceil(Number(it.parLevel||0)-lv.v),0);out.push({it:it,v:lv.v,q:q})}});return out}
+function todayCount(){var cs=D.counts||[];for(var i=0;i<cs.length;i++)if(cs[i].date===D.today)return cs[i];return null}
+
+/* ---------- photos ---------- */
+function compressToB64(file){return new Promise(function(res,rej){var u=URL.createObjectURL(file);var i=new Image();
+  i.onload=function(){var max=1600,sc=Math.min(1,max/Math.max(i.width,i.height));var c=document.createElement("canvas");c.width=Math.round(i.width*sc);c.height=Math.round(i.height*sc);
+    c.getContext("2d").drawImage(i,0,0,c.width,c.height);URL.revokeObjectURL(u);res(c.toDataURL("image/jpeg",.8).split(",")[1])};
+  i.onerror=function(){URL.revokeObjectURL(u);rej(new Error("generic"))};i.src=u})}
+function thumbs(ids){if(!ids||!ids.length)return "";return '<div class="thumbs">'+ids.map(function(id){return '<img alt="" data-pid="'+esc(id)+'" data-act="photo" data-id="'+esc(id)+'">'}).join("")+"</div>"}
+function fillPhotos(root){var imgs=(root||document).querySelectorAll("img[data-pid]");Array.prototype.forEach.call(imgs,function(im){var id=im.getAttribute("data-pid");var full=im.classList.contains("bigimg");var key=id+(full?"_f":"_t");
+  if(photoCache[key]){im.src=photoCache[key];return}
+  api("photo",{id:id,thumb:!full}).then(function(r){photoCache[key]=r.src;im.src=r.src}).catch(function(){})})}
+
+/* ---------- rendering ---------- */
+var pendingRender=false;
+function tabsFor(){if(!D||S.screen!=="app")return [];if(isMgr())return ["today","tasks","inventory","team","history"];return ["today","history","profile"]}
+function renderTabs(){var tabs=tabsFor();var nav=document.getElementById("tabs");var el=document.getElementById("tabsIn");
+  if(!tabs.length){nav.hidden=true;el.innerHTML="";return}
+  nav.hidden=false;if(tabs.indexOf(S.tab)<0)S.tab=tabs[0];
+  el.innerHTML=tabs.map(function(k){return '<button type="button" data-act="tab" data-tab="'+k+'" '+(S.tab===k?'aria-current="page"':"")+'>'+icons[k]+'<span>'+esc(k==="today"&&!isMgr()?t("myTasks"):t(k))+'</span></button>'}).join("")}
+function render(force){var v=document.getElementById("view");var ae=document.activeElement;
+  if(!force&&ae&&v.contains(ae)&&/INPUT|TEXTAREA|SELECT/.test(ae.tagName)){pendingRender=true;return}
+  pendingRender=false;applyLang();renderTabs();var h;
+  if(D&&D.store)document.getElementById("loc").textContent=String(D.store).replace(/^Bahia Bowls\s*·?\s*/,"")+" · Ops";
+  switch(S.screen){
+    case "loading":h='<h1>Bahia Bowls</h1><p class="sub">'+esc(t("loading"))+'</p>';break;
+    case "login":h=viewLogin();break;
+    case "register":h=viewRegister(true);break;
+    case "inactive":h='<h1>Bahia Bowls</h1><div class="panel"><p>'+esc(t("inactiveMsg"))+'</p><button class="btn ghost" type="button" data-act="signout">'+esc(t("signout"))+'</button></div>';break;
+    default:h=({today:isMgr()?viewMgrToday:viewMyToday,tasks:viewTasks,inventory:viewInventory,team:viewTeam,history:viewHistory,profile:function(){return viewRegister(false)}}[S.tab]||viewMyToday)()}
+  v.innerHTML=h;fillPhotos(v)}
+document.addEventListener("focusout",function(){setTimeout(function(){if(!pendingRender)return;var ae=document.activeElement;var v=document.getElementById("view");if(!(ae&&v.contains(ae)&&/INPUT|TEXTAREA|SELECT/.test(ae.tagName)))render()},0)});
+
+function viewLogin(){
+  if(!S.codeSent)return '<div class="login"><h1>'+esc(t("signin"))+'</h1><p class="sub">'+esc(t("signinSub"))+'</p><form class="f panel" id="emailForm"><div class="fld"><label for="le">'+esc(t("email"))+'</label><input id="le" type="email" required autocomplete="email" inputmode="email" dir="ltr" value="'+esc(S.loginEmail)+'"></div><button class="btn wide" type="submit">'+esc(t("sendCode"))+'</button></form></div>';
+  return '<div class="login"><h1>'+esc(t("signin"))+'</h1><p class="sub">'+esc(t("codeSent",{e:S.loginEmail}))+'</p><form class="f panel" id="codeForm"><div class="fld"><label for="lc">'+esc(t("code"))+'</label><input id="lc" class="code" required inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" dir="ltr"></div><button class="btn wide" type="submit">'+esc(t("verify"))+'</button><div class="btns"><button class="btn sm ghost" type="button" data-act="resend">'+esc(t("resend"))+'</button><button class="btn sm ghost" type="button" data-act="otherEmail">'+esc(t("otherEmail"))+'</button></div></form></div>'}
+
+function taskRow(x,showWho){var task=x.task,comp=x.comp;
+  var freqPill=task.freq==="weekly"?'<span class="pill">'+esc(t("weekly"))+'</span>':task.freq==="once"?'<span class="pill">'+esc(t("oneOff"))+'</span>':"";
+  var who=showWho?'<span class="pill">'+esc(task.assignee==="any"?t("anyone"):nameOf(task.assignee))+'</span>':"";
+  var meta=comp?esc(t("doneBy",{n:comp.byName||nameOf(comp.by),t:fmtTime(comp.doneAt)})):esc(task.notes||"");
+  return '<div class="row tap" role="button" tabindex="0" data-act="openTask" data-id="'+esc(task.id)+'"><span class="check '+(comp?"done":"")+'">'+(comp?icons.check:"")+'</span><div class="grow"><div class="t">'+esc(task.title)+'</div>'+(meta?'<div class="m">'+meta+'</div>':"")+(comp?thumbs(comp.photos):"")+'</div><div class="btns">'+freqPill+who+'</div></div>'}
+
+function progressPanel(list,showWho,emptyHtml){var done=list.filter(function(x){return x.comp}).length;
+  var h='<div class="panel"><div class="panel-h"><h2>'+esc(t("tasksToday"))+'</h2><div class="sp"></div><span class="lbl num">'+esc(t("progress",{a:done,b:list.length}))+'</span></div>';
+  if(!list.length)return h+emptyHtml+'</div>';
+  h+='<div class="meter"><i style="width:'+Math.round(done/list.length*100)+'%"></i></div>'+(done===list.length?'<div class="callout">'+esc(t("allDone"))+'</div>':"")+'<div class="list">'+list.map(function(x){return taskRow(x,showWho)}).join("")+'</div></div>';return h}
+
+function viewMyToday(){var first=(D.me.staff&&D.me.staff.firstName)||"";
+  return '<h1>'+esc(t("hi",{n:first}).trim())+'</h1><p class="sub">'+esc(fmtDay(D.today))+'</p>'+progressPanel(dueTasks(D.me.email),false,'<div class="empty">'+esc(t("noTasks"))+'</div>')}
+
+function viewMgrToday(){var tc=todayCount();var low=lowList();var sm=supMap();var drafts=(D.orders||[]).filter(function(o){return (o.status||"draft")==="draft"});
+  var h='<h1>'+esc(fmtDay(D.today))+'</h1><p class="sub">'+esc(D.store)+'</p><div class="stack">';
+  h+='<div class="panel"><div class="panel-h"><h2>'+esc(t("invCard"))+'</h2><div class="sp"></div>'+(tc?'<span class="pill ok">'+esc(t("countedAt",{t:fmtTime(tc.at),n:tc.by}))+'</span>':'<span class="pill warn">'+esc(t("notCounted"))+'</span>')+'</div>';
+  if(!(D.items||[]).length)h+='<div class="hint">'+esc(t("noItems"))+'</div>';
+  else if(low.length)h+='<div class="lbl">'+esc(t("lowItems"))+' · '+low.length+'</div><div class="list">'+low.map(function(x){return '<div class="row"><div class="grow"><div class="t">'+esc(x.it.name)+'</div><div class="m">'+esc((sm[x.it.supplierId]||{}).name||t("noSupplier"))+'</div></div><span class="pill bad num">'+esc(x.v)+' '+esc(x.it.unit||"")+'</span>'+(x.q?'<span class="pill num">'+esc(t("orderSugg",{q:x.q,u:x.it.unit||""}))+'</span>':"")+'</div>'}).join("")+'</div>';
+  else h+='<div class="hint">'+esc(t("noLow"))+'</div>';
+  h+='<div class="btns"><button class="btn sm" type="button" data-act="goCount">'+esc(t("countNow"))+'</button></div></div>';
+  if(drafts.length)h+='<div class="panel"><div class="panel-h"><h2>'+esc(t("pendingOrders"))+'</h2><div class="sp"></div><span class="pill warn num">'+drafts.length+'</span></div><div class="list">'+drafts.map(orderRow).join("")+'</div></div>';
+  h+=progressPanel(dueTasks(null),true,'<div class="empty">'+esc(t("noTasksMgr"))+'</div><div class="btns"><button class="btn sm" type="button" data-act="newTask">'+esc(t("addTask"))+'</button></div>');
+  return h+'</div>'}
+
+function viewTasks(){var grp={daily:[],weekly:[],once:[]};D.tasks.forEach(function(x){(grp[x.freq]||grp.once).push(x)});
+  var h='<h1>'+esc(t("tasks"))+'</h1><p class="sub">'+esc(t("photoRule"))+'</p><div class="stack"><div class="btns"><button class="btn" type="button" data-act="newTask">'+esc(t("addTask"))+'</button></div>';
+  if(!D.tasks.length)return h+'<div class="panel"><div class="empty">'+esc(t("noTasksMgr"))+'</div></div></div>';
+  ["daily","weekly","once"].forEach(function(f){if(!grp[f].length)return;grp[f].sort(function(a,b){return String(a.title).localeCompare(String(b.title))});
+    h+='<div class="panel"><div class="panel-h"><h2>'+esc(t(f==="weekly"?"weeklyF":f))+'</h2><div class="sp"></div><span class="lbl num">'+grp[f].length+'</span></div><div class="list">'+grp[f].map(function(x){return '<div class="row tap" role="button" tabindex="0" data-act="editTask" data-id="'+esc(x.id)+'"><div class="grow"><div class="t">'+esc(x.title)+'</div><div class="m">'+esc(x.assignee==="any"?t("anyone"):nameOf(x.assignee))+(x.freq==="once"&&x.dueDate?" · "+esc(fmtDateShort(x.dueDate)):"")+'</div></div>'+(x.active?"":'<span class="pill">'+esc(t("inactive"))+'</span>')+'</div>'}).join("")+'</div></div>'});
+  return h+'</div>'}
+
+function orderRow(o){var st=o.status||"draft";var cls=st==="sent"?"ok":st==="cancelled"?"":"warn";
+  return '<div class="row"><div class="grow"><div class="t">'+esc(o.supplier||t("supplier"))+' · <span class="num">'+esc(fmtDateShort(o.date||""))+'</span></div><div class="m">'+esc(o.lines||"")+'</div>'+(isOwner()&&st==="draft"?'<div class="btns" style="margin-top:8px"><button class="btn sm ghost" type="button" data-act="orderSt" data-id="'+esc(o.id)+'" data-st="sent">'+esc(t("markSent"))+'</button><button class="btn sm danger" type="button" data-act="orderSt" data-id="'+esc(o.id)+'" data-st="cancelled">'+esc(t("markCancelled"))+'</button></div>':"")+'</div><span class="pill '+cls+'">'+esc(t("st_"+st))+'</span></div>'}
+
+function viewInventory(){var segs=["count","items","suppliers","orders"];var sm=supMap();
+  var h='<h1>'+esc(t("inventory"))+'</h1><p class="sub">'+esc(fmtDay(D.today))+'</p><div class="stack"><div class="seg" role="group">'+segs.map(function(s){return '<button type="button" data-act="inv" data-s="'+s+'" aria-pressed="'+(S.invTab===s)+'">'+esc(t(s))+'</button>'}).join("")+'</div>';
+  var items=(D.items||[]).slice().sort(function(a,b){return String(a.category||"").localeCompare(String(b.category||""))||String(a.name).localeCompare(String(b.name))});
+  if(S.invTab==="count"){var act=items.filter(function(i){return i.active});
+    if(!act.length)return h+'<div class="panel"><div class="empty">'+esc(t("noItems"))+'</div><div class="btns"><button class="btn sm" type="button" data-act="inv" data-s="items">'+esc(t("addItem"))+'</button></div></div></div>';
+    var tc=todayCount();if(!S.countDraft){S.countDraft={};if(tc)for(var k in tc.values)S.countDraft[k]=String(tc.values[k])}
+    var cat=null;h+='<form class="panel" id="countForm"><div class="panel-h"><h2>'+esc(t("count"))+'</h2><div class="sp"></div>'+(tc?'<span class="pill ok">'+esc(t("countedAt",{t:fmtTime(tc.at),n:tc.by}))+'</span>':'<span class="pill warn">'+esc(t("notCounted"))+'</span>')+'</div><div class="cnt">';
+    act.forEach(function(it){if((it.category||"")!==cat){cat=it.category||"";if(cat)h+='<div class="daygrp" style="grid-column:1/-1">'+esc(cat)+'</div>'}
+      var lv=latestValue(it.id);var dv=S.countDraft[it.id]!==undefined?S.countDraft[it.id]:"";var isLow=dv!==""&&hasMin(it)&&Number(dv)<=Number(it.minLevel);
+      h+='<label for="c_'+esc(it.id)+'" style="min-width:0"><div class="t">'+esc(it.name)+'</div><div class="hint num">'+esc(t("reorderAt"))+' '+esc(hasMin(it)?it.minLevel:t("none"))+' · '+esc(t("par"))+' '+esc(it.parLevel===""?t("none"):it.parLevel)+' '+esc(it.unit||"")+(lv?' · '+esc(t("last"))+' '+esc(lv.v):"")+'</div></label><input id="c_'+esc(it.id)+'" class="'+(isLow?"low":"")+'" data-cnt="'+esc(it.id)+'" type="number" inputmode="decimal" min="0" step="any" value="'+esc(dv)+'" aria-label="'+esc(it.name)+'">'});
+    return h+'</div><button class="btn" type="submit">'+esc(t("saveCount"))+'</button></form></div>'}
+  if(S.invTab==="items"){h+='<div class="btns"><button class="btn" type="button" data-act="editItem" data-id="">'+esc(t("addItem"))+'</button></div>';
+    if(!items.length)return h+'<div class="panel"><div class="empty">'+esc(t("noItems"))+'</div></div></div>';
+    return h+'<div class="panel"><div class="list">'+items.map(function(it){var lv=latestValue(it.id);var low=lv&&hasMin(it)&&lv.v<=Number(it.minLevel);
+      return '<div class="row tap" role="button" tabindex="0" data-act="editItem" data-id="'+esc(it.id)+'"><div class="grow"><div class="t">'+esc(it.name)+'</div><div class="m num">'+esc(it.category?it.category+" · ":"")+esc((sm[it.supplierId]||{}).name||t("noSupplier"))+' · '+esc(t("reorderAt"))+' '+esc(it.minLevel)+' / '+esc(t("par"))+' '+esc(it.parLevel)+' '+esc(it.unit||"")+'</div></div>'+(it.active?"":'<span class="pill">'+esc(t("inactive"))+'</span>')+(lv?'<span class="pill num '+(low?"bad":"")+'">'+esc(lv.v)+'</span>':"")+'</div>'}).join("")+'</div></div></div>'}
+  if(S.invTab==="suppliers"){var sup=(D.suppliers||[]).slice().sort(function(a,b){return String(a.name).localeCompare(String(b.name))});
+    h+='<div class="btns"><button class="btn" type="button" data-act="editSup" data-id="">'+esc(t("addSupplier"))+'</button></div>';
+    if(!sup.length)return h+'<div class="panel"><div class="empty">'+esc(t("noSuppliers"))+'</div></div></div>';
+    return h+'<div class="panel"><div class="list">'+sup.map(function(s){var n=(D.items||[]).filter(function(i){return i.supplierId===s.id}).length;return '<div class="row tap" role="button" tabindex="0" data-act="editSup" data-id="'+esc(s.id)+'"><div class="grow"><div class="t">'+esc(s.name)+'</div><div class="m" dir="auto">'+esc([s.contact,s.email,s.phone].filter(Boolean).join(" · "))+'</div></div><span class="pill num">'+n+' '+esc(t("items"))+'</span></div>'}).join("")+'</div></div></div>'}
+  return h+'<div class="panel">'+((D.orders||[]).length?'<div class="list">'+D.orders.map(orderRow).join("")+'</div>':'<div class="empty">'+esc(t("noOrders"))+'</div>')+'</div></div>'}
+
+function posLabel(p){return p?t("pos_"+p):""}
+function viewTeam(){var st=staffList().slice().sort(function(a,b){return ((b.active?1:0)-(a.active?1:0))||String(a.firstName).localeCompare(String(b.firstName))});
+  var h='<h1>'+esc(t("team"))+'</h1><p class="sub">'+esc(t("staff"))+' · <span class="num">'+st.filter(function(s){return s.active}).length+'</span></p><div class="stack">';
+  if(isOwner())h+='<div class="callout"><strong>'+esc(t("inviteTitle"))+'.</strong> '+esc(t("inviteBody"))+'<div style="margin-top:8px">'+esc(t("joinCode"))+': <span class="big num">'+esc(D.joinCode||"")+'</span></div></div>';
+  if(!st.length)return h+'<div class="panel"><div class="empty">'+esc(t("noStaff"))+'</div></div></div>';
+  return h+'<div class="panel"><div class="list">'+st.map(function(s){return '<div class="row tap" role="button" tabindex="0" data-act="person" data-id="'+esc(s.email)+'"><div class="grow"><div class="t">'+esc((s.firstName||"")+" "+(s.lastName||""))+'</div><div class="m"><span dir="ltr">'+esc(s.phone||"")+'</span> · <span dir="ltr">'+esc(s.email)+'</span></div></div><span class="pill">'+esc(posLabel(s.position))+'</span>'+(s.role==="manager"?'<span class="pill ok">'+esc(t("manager"))+'</span>':"")+(s.active?"":'<span class="pill">'+esc(t("inactive"))+'</span>')+'</div>'}).join("")+'</div></div></div>'}
+
+function viewHistory(){var mgr=isMgr();
+  var h='<h1>'+esc(mgr?t("history"):t("myHist"))+'</h1><p class="sub">'+esc(mgr?D.store:t("byMe"))+'</p><div class="stack"><div class="seg" role="group">'+["7","30","all"].map(function(r){return '<button type="button" data-act="hr" data-r="'+r+'" aria-pressed="'+(S.histRange===r)+'">'+esc(t(r==="all"?"histAll":"hist"+r))+'</button>'}).join("")+'</div>';
+  if(mgr)h+='<div class="fld"><label for="histWho" class="lbl">'+esc(t("staff"))+'</label><select id="histWho"><option value="">'+esc(t("everyone"))+'</option>'+staffList().map(function(s){return '<option value="'+esc(s.email)+'" '+(S.histWho===s.email?"selected":"")+'>'+esc((s.firstName||"")+" "+(s.lastName||""))+'</option>'}).join("")+'</select></div>';
+  if(!S.hist){loadHistory();return h+'<div class="panel"><div class="empty">'+esc(t("loading"))+'</div></div></div>'}
+  var ev=S.hist;if(!ev.length)return h+'<div class="panel"><div class="empty">'+esc(t("noHist"))+'</div></div></div>';
+  var cur=null;h+='<div class="panel"><div class="list">';
+  ev.forEach(function(e){if(e.date!==cur){cur=e.date;h+='<div class="daygrp">'+esc(fmtDay(cur))+'</div>'}
+    if(e.type==="done")h+='<div class="row"><span class="check done">'+icons.check+'</span><div class="grow"><div class="t">'+esc(e.task||"")+'</div><div class="m">'+esc(e.byName||nameOf(e.by))+' · '+esc(fmtTime(e.doneAt))+(e.note?" · "+esc(e.note):"")+'</div>'+thumbs(e.photos)+'</div></div>';
+    else if(e.type==="count")h+='<div class="row"><div class="grow"><div class="t">'+esc(t("evCount"))+'</div><div class="m num">'+esc(e.byName)+' · '+esc(fmtTime(e.at))+' · '+esc(t("evCountM",{n:e.n,l:e.low}))+'</div></div>'+(e.low?'<span class="pill bad num">'+e.low+'</span>':"")+'</div>';
+    else if(e.type==="reg")h+='<div class="row"><div class="grow"><div class="t">'+esc(e.byName)+' '+esc(t("evReg"))+'</div><div class="m">'+esc(posLabel(e.position))+'</div></div></div>';
+    else h+='<div class="row"><div class="grow"><div class="t">'+esc(t("evOrder",{s:e.supplier||""}))+'</div><div class="m">'+esc(e.lines||"")+'</div></div><span class="pill">'+esc(t("st_"+(e.status||"draft")))+'</span></div>'});
+  return h+'</div></div></div>'}
+var histLoading=false;
+function loadHistory(){if(histLoading)return;histLoading=true;api("history",{days:S.histRange,who:S.histWho}).then(function(r){S.hist=r.events}).catch(function(e){S.hist=[];toast(errMsg(e))}).then(function(){histLoading=false;render()})}
+
+/* registration / profile form */
+function fld(id,label,val,type,extra){return '<div class="fld"><label for="'+id+'">'+esc(label)+'</label><input id="'+id+'" name="'+id+'" type="'+(type||"text")+'" value="'+esc(val||"")+'" '+(extra||"")+'></div>'}
+function viewRegister(first){var s=(D&&D.me.staff)||{};var p=(D&&D.myPrivate)||{};var days=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];var dl=lang==="he"?["ב׳","ג׳","ד׳","ה׳","ו׳","ש׳","א׳"]:days;var av=String(s.availability||"").split(/,\s*/);
+  var needJoin=first&&!isOwner();
+  return '<h1>'+esc(first?t("regTitle"):t("profile"))+'</h1><p class="sub">'+esc(t("regSub"))+'</p><form class="f panel" id="regForm" autocomplete="on">'+
+  (needJoin?fld("joinCode",t("joinCode"),"","text",'required inputmode="numeric" maxlength="4" dir="ltr" autocomplete="off"')+'<div class="hint" style="margin-top:-8px">'+esc(t("joinHint"))+'</div>':"")+
+  '<div class="sect">'+esc(t("secContact"))+'</div><div class="two">'+fld("firstName",t("first"),s.firstName,"text",'required autocomplete="given-name"')+fld("lastName",t("last"),s.lastName,"text",'required autocomplete="family-name"')+'</div>'+
+  fld("phone",t("phone"),s.phone,"tel",'required autocomplete="tel" dir="ltr"')+
+  '<div class="sect">'+esc(t("secWork"))+'</div><div class="two"><div class="fld"><label for="position">'+esc(t("position"))+'</label><select id="position" name="position">'+["crew","lead","prep","cash","mgr"].map(function(k){return '<option value="'+k+'" '+(s.position===k?"selected":"")+'>'+esc(t("pos_"+k))+'</option>'}).join("")+'</select></div>'+fld("startDate",t("start"),s.startDate,"date")+'</div>'+
+  '<div class="fld"><span class="lab">'+esc(t("avail"))+'</span><div class="days">'+days.map(function(d,i){return '<label><input type="checkbox" name="av" value="'+d+'" '+(av.indexOf(d)>=0?"checked":"")+'>'+esc(dl[i])+'</label>'}).join("")+'</div></div>'+
+  '<div class="two"><div class="fld"><label for="shift">'+esc(t("shift"))+'</label><select id="shift" name="shift">'+[["any","shiftAny"],["am","shiftAM"],["pm","shiftPM"]].map(function(a){return '<option value="'+a[0]+'" '+(s.shift===a[0]?"selected":"")+'>'+esc(t(a[1]))+'</option>'}).join("")+'</select></div>'+
+  '<div class="fld"><label for="langPref">'+esc(t("langPref"))+'</label><select id="langPref" name="langPref">'+[["en","English"],["es","Español"],["he","עברית"],["pt","Português"]].map(function(a){return '<option value="'+a[0]+'" '+(s.langPref===a[0]?"selected":"")+'>'+a[1]+'</option>'}).join("")+'</select></div></div>'+
+  '<div class="two"><div class="fld"><label for="shirt">'+esc(t("shirt"))+'</label><select id="shirt" name="shirt">'+["XS","S","M","L","XL","XXL"].map(function(z){return '<option '+(s.shirt===z?"selected":"")+'>'+z+'</option>'}).join("")+'</select></div>'+
+  '<div class="fld"><label for="foodCert">'+esc(t("foodCert"))+'</label><select id="foodCert" name="foodCert"><option value="no">'+esc(t("certNo"))+'</option><option value="yes" '+(s.foodCert==="yes"?"selected":"")+'>'+esc(t("certYes"))+'</option></select></div></div>'+
+  fld("certExp",t("certExp"),s.certExp,"date")+
+  '<div class="sect">'+esc(t("secPrivate"))+'</div><div class="priv">'+esc(t("privNote"))+'</div>'+
+  '<div class="two">'+fld("dob",t("dob"),p.dob,"date")+fld("ssn4",t("ssn4"),p.ssn4,"text",'inputmode="numeric" pattern="[0-9]{4}" maxlength="4" dir="ltr" autocomplete="off"')+'</div><div class="hint" style="margin-top:-8px">'+esc(t("ssnHint"))+'</div>'+
+  fld("street",t("street"),p.street,"text",'autocomplete="street-address"')+
+  '<div class="two">'+fld("city",t("city"),p.city,"text",'autocomplete="address-level2"')+'<div class="two">'+fld("state",t("state"),p.state||"FL","text",'autocomplete="address-level1"')+fld("zip",t("zip"),p.zip,"text",'inputmode="numeric" autocomplete="postal-code" dir="ltr"')+'</div></div>'+
+  '<div class="two">'+fld("emName",t("emName"),p.emName)+fld("emRel",t("emRel"),p.emRel)+'</div>'+fld("emPhone",t("emPhone"),p.emPhone,"tel",'dir="ltr"')+
+  '<div class="fld"><label for="notes">'+esc(t("notes"))+'</label><textarea id="notes" name="notes" rows="3">'+esc(p.notes||"")+'</textarea></div>'+
+  '<button class="btn" type="submit">'+esc(t("save"))+'</button>'+(first?"":'<button class="btn ghost" type="button" data-act="signout">'+esc(t("signout"))+'</button>')+'</form>'}
+
+/* ---------- sheets (bottom drawers) ---------- */
+function openSheet(title,body,onSubmit,submitLabel){var r=document.getElementById("sheetRoot");
+  r.innerHTML='<div class="scrim" data-act="closeScrim"><div class="sheet" role="dialog" aria-modal="true" aria-label="'+esc(title)+'"><div class="sheet-h"><h2>'+esc(title)+'</h2><button class="x" type="button" data-act="close" aria-label="'+esc(t("cancel"))+'">×</button></div>'+body+'</div></div>';
+  var f=r.querySelector("form");if(f&&onSubmit)f.addEventListener("submit",function(e){e.preventDefault();var b=f.querySelector('button[type="submit"]');var lbl=b?b.textContent:"";if(b){b.disabled=true;b.textContent=t("uploading")}
+    Promise.resolve(onSubmit(f)).then(function(ok){if(ok===false){if(b){b.disabled=false;b.textContent=lbl}}else closeSheet()})});
+  fillPhotos(r)}
+function closeSheet(){document.getElementById("sheetRoot").innerHTML="";S.delArm=null;if(pendingRender)render()}
+function run(action,payload,msg){return api(action,payload).then(function(r){if(msg)toast(msg);return refresh().then(function(){return r})}).catch(function(e){toast(errMsg(e));return false})}
+
+function sheetTask(task){var comp=compFor(task);var canUndo=comp&&(comp.by===D.me.email||isMgr());
+  var body='<div class="stack">'+(task.notes?'<p style="margin:0;white-space:pre-wrap">'+esc(task.notes)+'</p>':"");
+  if(comp){body+='<div class="callout">'+esc(t("taskDone"))+' · '+esc(t("doneBy",{n:comp.byName||nameOf(comp.by),t:fmtTime(comp.doneAt)}))+(comp.note?'<br>'+esc(comp.note):"")+'</div>'+thumbs(comp.photos)+(canUndo?'<div class="btns"><button class="btn ghost" type="button" data-act="undo" data-id="'+esc(comp.id)+'">'+esc(t("undo"))+'</button></div>':"")+'</div>';openSheet(task.title,body);return}
+  body+='<form class="f" id="doneForm"><label class="camera" for="ph">'+icons.camera+'<span id="phLbl">'+esc(t("takePhoto"))+' *</span><input id="ph" type="file" accept="image/*" capture="environment"></label><div class="thumbs" id="phPrev"></div>'+
+    '<div class="fld"><label for="dn">'+esc(t("note"))+'</label><textarea id="dn" rows="2"></textarea></div><button class="btn" type="submit">'+esc(t("markDone"))+'</button></form></div>';
+  var files=[];
+  openSheet(task.title,body,function(f){if(!files.length){toast(t("err_need_photo"));return false}
+    return Promise.all(files.map(compressToB64)).then(function(b64s){return run("complete",{taskId:task.id,note:f.querySelector("#dn").value.trim(),photos:b64s},t("saved"))}).catch(function(e){toast(errMsg(e));return false})});
+  var inp=document.getElementById("ph");inp.addEventListener("change",function(){if(inp.files&&inp.files[0]){files=[inp.files[0]];var pv=document.getElementById("phPrev");pv.innerHTML="";var im=document.createElement("img");im.alt="";im.src=URL.createObjectURL(inp.files[0]);pv.appendChild(im);document.getElementById("phLbl").textContent=t("retake")}})}
+
+function staffOptions(sel){return '<option value="any" '+(sel==="any"?"selected":"")+'>'+esc(t("anyone"))+'</option>'+staffList().filter(function(s){return s.active}).map(function(s){return '<option value="'+esc(s.email)+'" '+(sel===s.email?"selected":"")+'>'+esc((s.firstName||"")+" "+(s.lastName||""))+'</option>'}).join("")}
+function findBy(arr,k,v){for(var i=0;i<(arr||[]).length;i++)if(arr[i][k]===v)return arr[i];return null}
+function sheetEditTask(id){var x=id?findBy(D.tasks,"id",id):{freq:"daily",assignee:"any",active:true};
+  var body='<form class="f">'+fld("tt",t("title"),x.title,"text","required")+'<div class="fld"><label for="tn">'+esc(t("details"))+'</label><textarea id="tn" rows="3">'+esc(x.notes||"")+'</textarea></div>'+
+   '<div class="two"><div class="fld"><label for="ta">'+esc(t("assignee"))+'</label><select id="ta">'+staffOptions(x.assignee)+'</select></div><div class="fld"><label for="tf">'+esc(t("freq"))+'</label><select id="tf">'+["daily","weekly","once"].map(function(f){return '<option value="'+f+'" '+(x.freq===f?"selected":"")+'>'+esc(t(f==="weekly"?"weeklyF":f))+'</option>'}).join("")+'</select></div></div>'+
+   fld("td",t("dueDate"),x.dueDate||D.today,"date")+'<div class="hint">'+esc(t("photoRule"))+'</div>'+
+   '<div class="days"><label><input type="checkbox" id="tac" '+(x.active!==false?"checked":"")+'>'+esc(t("active"))+'</label></div>'+
+   '<div class="btns"><button class="btn" type="submit">'+esc(t("save"))+'</button>'+(id?'<button class="btn danger" type="button" data-act="del" data-a="deleteTask" data-id="'+esc(id)+'">'+esc(t("del"))+'</button>':"")+'</div></form>';
+  openSheet(id?t("editTask"):t("addTask"),body,function(f){var g=function(s){return f.querySelector(s)};var title=g("#tt").value.trim();if(!title)return false;
+    return run("saveTask",{id:id||"",title:title,notes:g("#tn").value.trim(),assignee:g("#ta").value,freq:g("#tf").value,dueDate:g("#td").value,active:g("#tac").checked},t("saved"))});
+  var tf=document.getElementById("tf"),td=document.getElementById("td").parentNode;var sync=function(){td.hidden=tf.value!=="once"};tf.addEventListener("change",sync);sync()}
+
+function sheetItem(id){var x=id?findBy(D.items,"id",id):{active:true};var cats={};(D.items||[]).forEach(function(i){if(i.category)cats[i.category]=1});
+  var body='<form class="f">'+fld("in",t("name"),x.name,"text","required")+'<div class="two">'+fld("ic",t("category"),x.category,"text",'list="cats"')+fld("iu",t("unit"),x.unit,"text",'placeholder="case, lb, bag…"')+'</div>'+
+   '<datalist id="cats">'+Object.keys(cats).map(function(c){return '<option value="'+esc(c)+'">'}).join("")+'</datalist>'+
+   '<div class="fld"><label for="is">'+esc(t("supplier"))+'</label><select id="is"><option value="">'+esc(t("noSupplier"))+'</option>'+(D.suppliers||[]).map(function(s){return '<option value="'+esc(s.id)+'" '+(x.supplierId===s.id?"selected":"")+'>'+esc(s.name)+'</option>'}).join("")+'</select></div>'+
+   '<div class="two">'+fld("imin",t("reorderAt"),x.minLevel,"number",'step="any" min="0" inputmode="decimal"')+fld("ipar",t("par"),x.parLevel,"number",'step="any" min="0" inputmode="decimal"')+'</div>'+
+   '<div class="days"><label><input type="checkbox" id="iac" '+(x.active!==false?"checked":"")+'>'+esc(t("active"))+'</label></div>'+
+   '<div class="btns"><button class="btn" type="submit">'+esc(t("save"))+'</button>'+(id?'<button class="btn danger" type="button" data-act="del" data-a="deleteItem" data-id="'+esc(id)+'">'+esc(t("del"))+'</button>':"")+'</div></form>';
+  openSheet(id?t("editItem"):t("addItem"),body,function(f){var g=function(s){return f.querySelector(s).value.trim()};if(!g("#in"))return false;
+    return run("saveItem",{id:id||"",name:g("#in"),category:g("#ic"),unit:g("#iu"),supplierId:g("#is"),minLevel:g("#imin"),parLevel:g("#ipar"),active:f.querySelector("#iac").checked},t("saved"))})}
+
+function sheetSup(id){var x=id?findBy(D.suppliers,"id",id):{};
+  var body='<form class="f">'+fld("sn",t("name"),x.name,"text","required")+fld("sc",t("contact"),x.contact)+'<div class="two">'+fld("se",t("email"),x.email,"email",'dir="ltr"')+fld("sp",t("phone"),x.phone,"tel",'dir="ltr"')+'</div>'+
+   '<div class="fld"><label for="so">'+esc(t("orderNotes"))+'</label><textarea id="so" rows="3" placeholder="'+esc(t("orderNotesHint"))+'">'+esc(x.notes||"")+'</textarea></div>'+
+   '<div class="btns"><button class="btn" type="submit">'+esc(t("save"))+'</button>'+(id?'<button class="btn danger" type="button" data-act="del" data-a="deleteSupplier" data-id="'+esc(id)+'">'+esc(t("del"))+'</button>':"")+'</div></form>';
+  openSheet(id?t("editSupplier"):t("addSupplier"),body,function(f){var g=function(s){return f.querySelector(s).value.trim()};if(!g("#sn"))return false;
+    return run("saveSupplier",{id:id||"",name:g("#sn"),contact:g("#sc"),email:g("#se"),phone:g("#sp"),notes:g("#so")},t("saved"))})}
+
+function kv(k,v){return v?'<dt>'+esc(k)+'</dt><dd>'+esc(v)+'</dd>':""}
+function sheetPerson(email){var s=findBy(staffList(),"email",email)||{};var title=((s.firstName||"")+" "+(s.lastName||"")).trim()||email;
+  var pub='<dl class="kv">'+kv(t("phone"),s.phone)+kv(t("email"),s.email)+kv(t("position"),posLabel(s.position))+kv(t("start"),s.startDate)+kv(t("avail"),s.availability)+kv(t("shift"),s.shift?t({any:"shiftAny",am:"shiftAM",pm:"shiftPM"}[s.shift]):"")+kv(t("langPref"),s.langPref)+kv(t("shirt"),s.shirt)+kv(t("foodCert"),s.foodCert==="yes"?t("certYes")+(s.certExp?" · "+s.certExp:""):t("certNo"))+kv(t("regOn"),s.createdAt?fmtDateShort(String(s.createdAt).slice(0,10)):"")+'</dl>';
+  if(!isOwner()){openSheet(title,'<div class="stack">'+pub+'</div>');return}
+  openSheet(title,'<div class="stack">'+pub+'<div class="sect">'+esc(t("secPrivate"))+'</div><div id="privBox" class="hint">'+esc(t("loading"))+'</div>'+
+    '<div class="days"><label><input type="checkbox" id="pm" '+(s.role==="manager"?"checked":"")+'>'+esc(t("manager"))+'</label><label><input type="checkbox" id="pa" '+(s.active?"checked":"")+'>'+esc(t("active"))+'</label></div><div class="hint">'+esc(t("managerHint"))+'</div></div>');
+  api("person",{email:email}).then(function(r){var p=r.priv;var box=document.getElementById("privBox");if(!box)return;
+    box.outerHTML=p?'<dl class="kv">'+kv(t("dob"),p.dob)+kv(t("ssn4"),p.ssn4?"XXX-XX-"+p.ssn4:"")+kv(t("street"),[p.street,p.city,p.state,p.zip].filter(Boolean).join(", "))+kv(t("emName"),[p.emName,p.emRel].filter(Boolean).join(" · "))+kv(t("emPhone"),p.emPhone)+kv(t("notes"),p.notes)+'</dl>':'<div class="hint">'+esc(t("none"))+'</div>'}).catch(function(){});
+  document.getElementById("pm").addEventListener("change",function(e){run("setStaff",{email:email,role:e.target.checked?"manager":"employee"},t("saved"))});
+  document.getElementById("pa").addEventListener("change",function(e){run("setStaff",{email:email,active:e.target.checked},t("saved"))})}
+
+/* ---------- events ---------- */
+document.addEventListener("click",function(e){var el=e.target.closest("[data-act]");if(!el)return;var a=el.getAttribute("data-act");var id=el.getAttribute("data-id");
+  if(a==="closeScrim"&&e.target!==el)return;
+  switch(a){
+  case "tab":S.tab=el.getAttribute("data-tab");S.countDraft=null;if(S.tab==="history")S.hist=null;render(true);window.scrollTo(0,0);refresh();break;
+  case "close":case "closeScrim":closeSheet();break;
+  case "openTask":var tk=findBy(D.tasks,"id",id);if(tk)sheetTask(tk);break;
+  case "newTask":sheetEditTask(null);break;
+  case "editTask":sheetEditTask(id);break;
+  case "goCount":S.tab="inventory";S.invTab="count";S.countDraft=null;render(true);break;
+  case "inv":S.invTab=el.getAttribute("data-s");S.countDraft=null;render(true);break;
+  case "editItem":sheetItem(id||null);break;
+  case "editSup":sheetSup(id||null);break;
+  case "person":sheetPerson(id);break;
+  case "photo":openSheet(t("photo"),'<img class="bigimg" alt="" data-pid="'+esc(id)+'">');break;
+  case "hr":S.histRange=el.getAttribute("data-r");S.hist=null;render(true);break;
+  case "orderSt":run("orderStatus",{id:id,status:el.getAttribute("data-st")},t("saved"));break;
+  case "undo":run("undo",{id:id},t("saved")).then(function(r){if(r!==false)closeSheet()});break;
+  case "del":var key=el.getAttribute("data-a")+id;if(S.delArm!==key){S.delArm=key;el.textContent=t("confirmDel");return}
+    run(el.getAttribute("data-a"),{id:id},t("saved")).then(function(r){if(r!==false)closeSheet()});break;
+  case "signout":gs("signOut",token).catch(function(){});token=null;ls("bb_token",null);D=null;S.screen="login";S.codeSent=false;render(true);break;
+  case "otherEmail":S.codeSent=false;render(true);break;
+  case "resend":sendCode();break;
+  }});
+document.addEventListener("keydown",function(e){if((e.key==="Enter"||e.key===" ")&&e.target.matches&&e.target.matches('[role="button"][data-act]')){e.preventDefault();e.target.click()}if(e.key==="Escape"&&document.getElementById("sheetRoot").innerHTML)closeSheet()});
+document.addEventListener("change",function(e){if(e.target.id==="histWho"){S.histWho=e.target.value;S.hist=null;render(true)}});
+document.addEventListener("input",function(e){var k=e.target.getAttribute&&e.target.getAttribute("data-cnt");if(!k)return;if(!S.countDraft)S.countDraft={};S.countDraft[k]=e.target.value;var it=itemsMap()[k];
+  e.target.classList.toggle("low",e.target.value!==""&&hasMin(it)&&Number(e.target.value)<=Number(it.minLevel))});
+function busyBtn(f,on){var b=f.querySelector('button[type="submit"]');if(!b)return;if(on){b._l=b.textContent;b.disabled=true;b.textContent=t("uploading")}else{b.disabled=false;b.textContent=b._l||b.textContent}}
+function sendCode(){return gs("requestCode",S.loginEmail,lang).then(function(){S.codeSent=true;render(true);var c=document.getElementById("lc");if(c)c.focus()}).catch(function(e){toast(errMsg(e))})}
+document.addEventListener("submit",function(e){var f=e.target;if(f.closest("#sheetRoot"))return;e.preventDefault();
+  if(f.id==="emailForm"){S.loginEmail=f.querySelector("#le").value.trim().toLowerCase();ls("bb_email",S.loginEmail);busyBtn(f,true);sendCode().then(function(){busyBtn(f,false)})}
+  if(f.id==="codeForm"){busyBtn(f,true);gs("verifyCode",S.loginEmail,f.querySelector("#lc").value).then(function(r){token=r.token;ls("bb_token",token);S.codeSent=false;return refresh()}).catch(function(e){busyBtn(f,false);toast(errMsg(e))})}
+  if(f.id==="countForm"){var values={};for(var k in (S.countDraft||{})){var v=S.countDraft[k];if(v!==""&&!isNaN(Number(v)))values[k]=Number(v)}
+    busyBtn(f,true);run("saveCount",{values:values},t("countSaved")).then(function(){S.countDraft=null;render(true)})}
+  if(f.id==="regForm"){var g=function(n){return (f.elements[n]&&f.elements[n].value||"").trim()};
+    var pub={firstName:g("firstName"),lastName:g("lastName"),phone:g("phone"),position:g("position"),startDate:g("startDate"),
+      availability:Array.prototype.map.call(f.querySelectorAll('input[name="av"]:checked'),function(x){return x.value}),shift:g("shift"),langPref:g("langPref"),shirt:g("shirt"),foodCert:g("foodCert"),certExp:g("certExp")};
+    var priv={dob:g("dob"),ssn4:g("ssn4"),street:g("street"),city:g("city"),state:g("state"),zip:g("zip"),emName:g("emName"),emRel:g("emRel"),emPhone:g("emPhone"),notes:g("notes")};
+    busyBtn(f,true);run("register",{pub:pub,priv:priv,joinCode:g("joinCode")},t("saved")).then(function(r){busyBtn(f,false);if(r!==false){S.tab="today";render(true);window.scrollTo(0,0)}})}});
+document.getElementById("langBtn").addEventListener("click",function(){lang=lang==="he"?"en":"he";ls("bb_lang",lang);render(true)});
+
+/* ---------- load ---------- */
+var refreshing=null;
+function refresh(){if(!token){S.screen="login";render(true);return Promise.resolve()}
+  if(refreshing)return refreshing;
+  refreshing=api("boot").then(function(d){D=d;
+    var r=d.me.role;S.screen=r==="guest"?"register":r==="inactive"?"inactive":"app";render()}).catch(function(e){if(String(e&&e.message)!=="signed_out")toast(errMsg(e))}).then(function(){refreshing=null});
+  return refreshing}
+setInterval(function(){if(document.visibilityState==="visible"&&S.screen==="app"&&!document.getElementById("sheetRoot").innerHTML)refresh()},90000);
+document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible"&&S.screen==="app")refresh()});
+applyLang();render(true);refresh();
+})();
+</script>
+</body>
+</html>
