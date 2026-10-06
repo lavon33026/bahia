@@ -287,9 +287,13 @@ function compressToB64(file){return new Promise(function(res,rej){var u=URL.crea
     c.getContext("2d").drawImage(i,0,0,c.width,c.height);URL.revokeObjectURL(u);res(c.toDataURL("image/jpeg",.8).split(",")[1])};
   i.onerror=function(){URL.revokeObjectURL(u);rej(new Error("generic"))};i.src=u})}
 function thumbs(ids){if(!ids||!ids.length)return "";return '<div class="thumbs">'+ids.map(function(id){return '<img alt="" data-pid="'+esc(id)+'" data-act="photo" data-id="'+esc(id)+'">'}).join("")+"</div>"}
-function fillPhotos(root){var imgs=(root||document).querySelectorAll("img[data-pid]");Array.prototype.forEach.call(imgs,function(im){var id=im.getAttribute("data-pid");var full=im.classList.contains("bigimg");var key=id+(full?"_f":"_t");
+function loadPhoto(im){var id=im.getAttribute("data-pid");var full=im.classList.contains("bigimg");var key=id+(full?"_f":"_t");
   if(photoCache[key]){im.src=photoCache[key];return}
-  api("photo",{id:id,thumb:!full}).then(function(r){photoCache[key]=r.src;im.src=r.src}).catch(function(){})})}
+  api("photo",{id:id,thumb:!full}).then(function(r){photoCache[key]=r.src;im.src=r.src}).catch(function(){})}
+var photoObs=("IntersectionObserver" in window)?new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){photoObs.unobserve(e.target);loadPhoto(e.target)}})},{rootMargin:"300px"}):null;
+function fillPhotos(root){var imgs=(root||document).querySelectorAll("img[data-pid]");Array.prototype.forEach.call(imgs,function(im){
+  var key=im.getAttribute("data-pid")+(im.classList.contains("bigimg")?"_f":"_t");
+  if(photoCache[key]||!photoObs||im.classList.contains("bigimg"))loadPhoto(im);else photoObs.observe(im)})}
 
 /* ---------- rendering ---------- */
 var pendingRender=false;
@@ -435,15 +439,27 @@ function viewHistory(){var mgr=isMgr();
   if(mgr)h+='<div class="fld"><label for="histWho" class="lbl">'+esc(t("staff"))+'</label><select id="histWho"><option value="">'+esc(t("everyone"))+'</option>'+staffList().map(function(s){return '<option value="'+esc(s.email)+'" '+(S.histWho===s.email?"selected":"")+'>'+esc((s.firstName||"")+" "+(s.lastName||""))+'</option>'}).join("")+'</select></div>';
   if(!S.hist){loadHistory();return h+'<div class="panel"><div class="empty">'+esc(t("loading"))+'</div></div></div>'}
   var ev=S.hist;if(!ev.length)return h+'<div class="panel"><div class="empty">'+esc(t("noHist"))+'</div></div></div>';
-  var cur=null;h+='<div class="panel"><div class="list">';
-  ev.forEach(function(e){if(e.date!==cur){cur=e.date;h+='<div class="daygrp">'+esc(fmtDay(cur))+'</div>'}
-    if(e.type==="done")h+='<div class="row"><span class="check done">'+icons.check+'</span><div class="grow"><div class="t">'+esc(e.task||"")+'</div><div class="m">'+esc(e.byName||nameOf(e.by))+' · '+esc(fmtTime(e.doneAt))+(e.note?" · "+esc(e.note):"")+'</div>'+thumbs(e.photos)+'</div></div>';
-    else if(e.type==="count")h+='<div class="row"><div class="grow"><div class="t">'+esc(t("evCount"))+'</div><div class="m num">'+esc(e.byName)+' · '+esc(fmtTime(e.at))+' · '+esc(t("evCountM",{n:e.n,l:e.low}))+'</div></div>'+(e.low?'<span class="pill bad num">'+e.low+'</span>':"")+'</div>';
-    else if(e.type==="list")h+='<div class="row"><span class="check '+(e.n>=e.total&&e.total?"done":"")+'">'+(e.n>=e.total&&e.total?icons.check:"")+'</span><div class="grow"><div class="t">'+esc(t("evList",{l:t(e.list),s:e.slot==="day"?"":t(e.slot)}).replace(/ · $/,""))+'</div><div class="m num">'+esc(t("evListM",{n:e.n,t:e.total,b:e.byName}))+' · '+esc(fmtTime(e.at))+'</div></div></div>';
-    else if(e.type==="check")h+='<div class="row"><span class="check done">'+icons.check+'</span><div class="grow"><div class="t">'+esc(e.item)+'</div><div class="m">'+esc(t(e.list))+(e.slot!=="day"?" · "+esc(t(e.slot)):"")+' · '+esc(fmtTime(e.doneAt))+'</div>'+thumbs(e.photos)+'</div></div>';
-    else if(e.type==="reg")h+='<div class="row"><div class="grow"><div class="t">'+esc(e.byName)+' '+esc(t("evReg"))+'</div><div class="m">'+esc(posLabel(e.position))+'</div></div></div>';
-    else h+='<div class="row"><div class="grow"><div class="t">'+esc(t("evOrder",{s:e.supplier||""}))+'</div><div class="m">'+esc(e.lines||"")+'</div></div><span class="pill">'+esc(t("st_"+(e.status||"draft")))+'</span></div>'});
-  return h+'</div></div></div>'}
+  var days={},order=[];ev.forEach(function(e){if(!days[e.date]){days[e.date]=[];order.push(e.date)}days[e.date].push(e)});
+  order.sort().reverse();
+  var tot={};(D.checklists||[]).forEach(function(c){c.slots.forEach(function(sl){var k=c.list+"|"+sl;tot[k]=(tot[k]||0)+1})});
+  var roundOrder=["opening|day","prep|am","prep|pm","closing|day"];
+  order.forEach(function(day){var list=days[day];var rounds={},other=[];
+    list.forEach(function(e){if(e.type==="check"){var k=e.list+"|"+e.slot;(rounds[k]=rounds[k]||[]).push(e)}else other.push(e)});
+    h+='<div class="panel"><div class="panel-h"><h2>'+esc(fmtDay(day))+'</h2></div>';
+    if(other.length){other.sort(function(a,b){return String(a.at).localeCompare(String(b.at))});h+='<div class="list">'+other.map(histRow).join("")+'</div>'}
+    var keys=Object.keys(rounds).sort(function(a,b){var ia=roundOrder.indexOf(a),ib=roundOrder.indexOf(b);return (ia<0?9:ia)-(ib<0?9:ib)});
+    keys.forEach(function(k){var p=k.split("|");var items=rounds[k].sort(function(a,b){return String(a.doneAt).localeCompare(String(b.doneAt))});
+      var total=tot[k]||0;var label=t(p[0])+(p[1]!=="day"?" · "+t(p[1]):"");
+      h+='<div class="daygrp" style="display:flex;gap:8px;align-items:center"><span style="flex:1">'+esc(label)+'</span>'+(mgr&&!S.histWho&&total?'<span class="pill num '+(items.length>=total?"ok":"warn")+'">'+items.length+' / '+total+'</span>':"")+'</div><div class="list">'+items.map(function(e){
+        return '<div class="row"><span class="check done">'+icons.check+'</span><div class="grow"><div class="t">'+esc(e.item)+'</div><div class="m">'+esc(e.byName||nameOf(e.by))+' · '+esc(fmtTime(e.doneAt))+'</div>'+thumbs(e.photos)+'</div></div>'}).join("")+'</div>'});
+    h+='</div>'});
+  return h+'</div>'}
+function histRow(e){
+    if(e.type==="done")return '<div class="row"><span class="check done">'+icons.check+'</span><div class="grow"><div class="t">'+esc(e.task||"")+'</div><div class="m">'+esc(e.byName||nameOf(e.by))+' · '+esc(fmtTime(e.doneAt))+(e.note?" · "+esc(e.note):"")+'</div>'+thumbs(e.photos)+'</div></div>';
+    if(e.type==="count")return '<div class="row"><div class="grow"><div class="t">'+esc(t("evCount"))+'</div><div class="m num">'+esc(e.byName)+' · '+esc(fmtTime(e.at))+' · '+esc(t("evCountM",{n:e.n,l:e.low}))+'</div></div>'+(e.low?'<span class="pill bad num">'+e.low+'</span>':"")+'</div>';
+    if(e.type==="reg")return '<div class="row"><div class="grow"><div class="t">'+esc(e.byName)+' '+esc(t("evReg"))+'</div><div class="m">'+esc(posLabel(e.position))+'</div></div></div>';
+    if(e.type==="order")return '<div class="row"><div class="grow"><div class="t">'+esc(t("evOrder",{s:e.supplier||""}))+'</div><div class="m">'+esc(e.lines||"")+'</div></div><span class="pill">'+esc(t("st_"+(e.status||"draft")))+'</span></div>';
+    return ""}
 var histLoading=false;
 function loadHistory(){if(histLoading)return;histLoading=true;api("history",{days:S.histRange,who:S.histWho}).then(function(r){S.hist=r.events}).catch(function(e){S.hist=[];toast(errMsg(e))}).then(function(){histLoading=false;render()})}
 
