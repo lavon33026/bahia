@@ -39,7 +39,7 @@ img{max-width:100%}
 .chipbtn{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:13px;cursor:pointer}
 .tabs{position:fixed;bottom:0;left:0;right:0;z-index:5;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
 .tabs .in{max-width:720px;margin:0 auto;display:flex}
-.tabs button{flex:1;border:0;background:none;padding:10px 4px 12px;font-size:12px;color:var(--muted);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px}
+.tabs button{flex:1;min-width:0;border:0;background:none;padding:10px 2px 12px;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--muted);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px}
 .tabs button svg{width:22px;height:22px}
 .tabs button[aria-current="page"]{color:var(--acai);font-weight:600}
 h1{font-family:var(--f-display);font-weight:800;font-size:26px;line-height:1.15;margin:20px 0 4px;text-wrap:balance;letter-spacing:-.01em}
@@ -156,7 +156,7 @@ undo:"Undo",uploading:"Saving…",photoRule:"Every task needs a photo before it 
 invCard:"Inventory",countedAt:"Counted today at {t} by {n}",notCounted:"Not counted yet today",countNow:"Count now",
 lowItems:"Below reorder level",noLow:"Everything is above its reorder level.",orderSugg:"Order {q} {u}",
 progress:"{a} of {b} done",tasksToday:"Today's tasks",pendingOrders:"Order drafts waiting for approval",
-count:"Daily count",items:"Items",suppliers:"Suppliers",orders:"Orders",saveCount:"Save today's count",countSaved:"Count saved",
+count:"Daily count",items:"Items",suppliers:"Suppliers",orders:"Shopping list",shopNow:"To buy / order now",shopEmpty:"Nothing to buy. Everything is above its reorder level.",shopNoCount:"No count yet. The list fills in after the first daily count.",basedOn:"Based on the count from {d}",pastOrders:"Earlier lists",needCol:"Buy {q}",haveCol:"have {h} / par {p}",saveCount:"Save today's count",countSaved:"Count saved",
 reorderAt:"Reorder at",par:"Fill up to",unit:"Unit",supplier:"Supplier",category:"Category",name:"Name",active:"Active",
 addItem:"Add item",addSupplier:"Add supplier",editItem:"Edit item",editSupplier:"Edit supplier",
 noItems:"No items yet. Add them here, or send the inventory spreadsheet and they will be imported.",
@@ -173,7 +173,7 @@ inviteTitle:"Adding employees",inviteBody:"Send employees this page's link and t
 noStaff:"Nobody has registered yet.",newCode:"Change join code",confirmCode:"Tap again to change the code",codeChanged:"New join code: {c}",codeHint:"Employees already registered are not affected. Only new employees need the new code.",regOn:"Registered",
 hist7:"7 days",hist30:"30 days",histAll:"All",everyone:"Everyone",noHist:"Nothing recorded in this period yet.",
 evCount:"Inventory counted",evCountM:"{n} items, {l} low",evReg:"joined the team",evOrder:"Order prepared for {s}",
-owner:"Owner",myHist:"What I've done",byMe:"Your completed tasks"},
+owner:"Owner",myHist:"What I've done",byMe:"Your completed tasks",lists:"Checklists",prep:"Prep",opening:"Opening",closing:"Closing",am:"Morning",pm:"Afternoon",manageTasks:"Manage tasks",slotOpensAt:"Opens at {t}",slotClosed:"The morning round closed at {t}. Use the afternoon list.",slotWin:"Open {a}–{b}",pmClosed:"The afternoon round closed at {t}.",amWin:"Open until {t}",err_slot_closed:"This round is not open right now.",noLists:"This list is empty.",doneAt:"{n} · {t}",uncheck:"Remove check",photoNeeded:"Photo",parOwnerOnly:"Only the owner can change reorder levels.",method:"How we order",mShop:"Shopping list (we buy in store)",mEmail:"Email order to supplier",markBought:"Mark bought",st_tobuy:"To buy",st_bought:"Bought",listSent:"Count saved. Shopping list emailed.",evList:"{l} · {s}",evListM:"{n} of {t} checked · {b}",evCheck:"checked"},
 he:{loading:"טוען…",today:"היום",tasks:"משימות",inventory:"מלאי",team:"צוות",history:"היסטוריה",myTasks:"המשימות שלי",profile:"פרופיל",
 hi:"היי {n}",signin:"כניסה",signinSub:"הקלידו את המייל שלכם ונשלח קוד בן 6 ספרות.",email:"מייל",sendCode:"שליחת קוד",
 codeSent:"שלחנו קוד ל-{e}. הוא בתוקף ל-10 דקות.",code:"קוד",verify:"כניסה",otherEmail:"מייל אחר",resend:"שליחת קוד חדש",
@@ -196,7 +196,7 @@ undo:"ביטול סימון",uploading:"שומר…",photoRule:"כל משימה 
 invCard:"מלאי",countedAt:"נספר היום ב-{t} ע״י {n}",notCounted:"עדיין לא נספר היום",countNow:"לספירה",
 lowItems:"מתחת לרמת הזמנה",noLow:"כל הפריטים מעל רמת ההזמנה.",orderSugg:"להזמין {q} {u}",
 progress:"{a} מתוך {b} בוצעו",tasksToday:"משימות היום",pendingOrders:"טיוטות הזמנה שמחכות לאישור",
-count:"ספירה יומית",items:"פריטים",suppliers:"ספקים",orders:"הזמנות",saveCount:"שמירת ספירת היום",countSaved:"הספירה נשמרה",
+count:"ספירה יומית",items:"פריטים",suppliers:"ספקים",orders:"רשימת קניות",shopNow:"לקנות / להזמין עכשיו",shopEmpty:"אין מה לקנות. כל הפריטים מעל רמת ההזמנה.",shopNoCount:"עדיין אין ספירה. הרשימה תתמלא אחרי הספירה היומית הראשונה.",basedOn:"לפי הספירה מ-{d}",pastOrders:"רשימות קודמות",needCol:"לקנות {q}",haveCol:"יש {h} / par {p}",saveCount:"שמירת ספירת היום",countSaved:"הספירה נשמרה",
 reorderAt:"להזמין כשיורד ל-",par:"להשלים עד",unit:"יחידה",supplier:"ספק",category:"קטגוריה",name:"שם",active:"פעיל",
 addItem:"הוספת פריט",addSupplier:"הוספת ספק",editItem:"עריכת פריט",editSupplier:"עריכת ספק",
 noItems:"אין עדיין פריטים. אפשר להוסיף כאן, או לשלוח את קובץ האקסל והפריטים ייובאו.",
@@ -213,7 +213,7 @@ inviteTitle:"הוספת עובדים",inviteBody:"שלחו לעובדים את �
 noStaff:"עדיין אף אחד לא נרשם.",newCode:"החלפת קוד הצטרפות",confirmCode:"לחצו שוב להחלפת הקוד",codeChanged:"קוד ההצטרפות החדש: {c}",codeHint:"עובדים שכבר רשומים לא מושפעים. רק עובדים חדשים יצטרכו את הקוד החדש.",regOn:"נרשם/ה",
 hist7:"7 ימים",hist30:"30 יום",histAll:"הכל",everyone:"כולם",noHist:"אין עדיין תיעוד בתקופה הזו.",
 evCount:"ספירת מלאי",evCountM:"{n} פריטים, {l} חסרים",evReg:"הצטרף/ה לצוות",evOrder:"הוכנה הזמנה ל-{s}",
-owner:"בעלים",myHist:"מה שביצעתי",byMe:"המשימות שסיימת"}
+owner:"בעלים",myHist:"מה שביצעתי",byMe:"המשימות שסיימת",lists:"צ'קליסט",prep:"הכנות",opening:"פתיחה",closing:"סגירה",am:"בוקר",pm:"אחה״צ",manageTasks:"ניהול משימות",slotOpensAt:"נפתח ב-{t}",slotClosed:"סבב הבוקר נסגר ב-{t}.",slotWin:"פתוח {a}–{b}",pmClosed:"סבב אחה״צ נסגר ב-{t}.",amWin:"פתוח עד {t}",err_slot_closed:"הסבב הזה לא פתוח כרגע.",noLists:"הרשימה ריקה.",doneAt:"{n} · {t}",uncheck:"ביטול סימון",photoNeeded:"תמונה",parOwnerOnly:"רק הבעלים יכול לשנות רמות הזמנה.",method:"איך מזמינים",mShop:"רשימת קניות (קונים בחנות)",mEmail:"הזמנה במייל לספק",markBought:"סימון כנקנה",st_tobuy:"לקנות",st_bought:"נקנה",listSent:"הספירה נשמרה. רשימת הקניות נשלחה במייל.",evList:"{l} · {s}",evListM:"{n} מתוך {t} סומנו · {b}",evCheck:"סימן/ה"}
 };
 function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){return null}}
 var lang=ls("bb_lang")||((navigator.language||"").toLowerCase().indexOf("he")===0?"he":"en");
@@ -249,6 +249,8 @@ inventory:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-wid
 team:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8.5" r="3.2"/><path d="M3.5 19c.6-3 2.8-4.6 5.5-4.6s4.9 1.6 5.5 4.6"/><circle cx="17" cy="9.5" r="2.4"/><path d="M15.5 14.6c2.3-.3 4.3.9 5 3.6"/></svg>',
 history:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12a8 8 0 1 0 2.4-5.7L4 8.5"/><path d="M4 4v4.5h4.5M12 8v4.5l3 2"/></svg>',
 profile:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8.5" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.6 7-5.6s6.2 2 7 5.6"/></svg>',
+lists:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M9 3.5h6v2.5H9zM8.5 11l1.5 1.5 3-3M8.5 16.5h7"/></svg>',
+prep:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 13h16l-1.5 6.5h-13z"/><path d="M7 13c0-3 2-5.5 5-5.5s5 2.5 5 5.5M12 7.5V4.5"/></svg>',
 check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>',
 camera:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8h3l2-2.5h6L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.6"/></svg>'};
 
@@ -291,10 +293,11 @@ function fillPhotos(root){var imgs=(root||document).querySelectorAll("img[data-p
 
 /* ---------- rendering ---------- */
 var pendingRender=false;
-function tabsFor(){if(!D||S.screen!=="app")return [];if(isMgr())return ["today","tasks","inventory","team","history"];return ["today","history","profile"]}
+function tabsFor(){if(!D||S.screen!=="app")return [];if(isMgr())return ["today","lists","prep","inventory","team","history"];return ["today","lists","prep","history","profile"]}
+function hiddenTabs(){return isMgr()?["tasks"]:[]}
 function renderTabs(){var tabs=tabsFor();var nav=document.getElementById("tabs");var el=document.getElementById("tabsIn");
   if(!tabs.length){nav.hidden=true;el.innerHTML="";return}
-  nav.hidden=false;if(tabs.indexOf(S.tab)<0)S.tab=tabs[0];
+  nav.hidden=false;if(tabs.indexOf(S.tab)<0&&hiddenTabs().indexOf(S.tab)<0)S.tab=tabs[0];
   el.innerHTML=tabs.map(function(k){return '<button type="button" data-act="tab" data-tab="'+k+'" '+(S.tab===k?'aria-current="page"':"")+'>'+icons[k]+'<span>'+esc(k==="today"&&!isMgr()?t("myTasks"):t(k))+'</span></button>'}).join("")}
 function render(force){var v=document.getElementById("view");var ae=document.activeElement;
   if(!force&&ae&&v.contains(ae)&&/INPUT|TEXTAREA|SELECT/.test(ae.tagName)){pendingRender=true;return}
@@ -305,7 +308,7 @@ function render(force){var v=document.getElementById("view");var ae=document.act
     case "login":h=viewLogin();break;
     case "register":h=viewRegister(true);break;
     case "inactive":h='<h1>Bahia Bowls</h1><div class="panel"><p>'+esc(t("inactiveMsg"))+'</p><button class="btn ghost" type="button" data-act="signout">'+esc(t("signout"))+'</button></div>';break;
-    default:h=({today:isMgr()?viewMgrToday:viewMyToday,tasks:viewTasks,inventory:viewInventory,team:viewTeam,history:viewHistory,profile:function(){return viewRegister(false)}}[S.tab]||viewMyToday)()}
+    default:h=({today:isMgr()?viewMgrToday:viewMyToday,lists:viewLists,prep:viewPrep,tasks:viewTasks,inventory:viewInventory,team:viewTeam,history:viewHistory,profile:function(){return viewRegister(false)}}[S.tab]||viewMyToday)()}
   v.innerHTML=h;fillPhotos(v)}
 document.addEventListener("focusout",function(){setTimeout(function(){if(!pendingRender)return;var ae=document.activeElement;var v=document.getElementById("view");if(!(ae&&v.contains(ae)&&/INPUT|TEXTAREA|SELECT/.test(ae.tagName)))render()},0)});
 
@@ -335,7 +338,8 @@ function viewMgrToday(){var tc=todayCount();var low=lowList();var sm=supMap();va
   else h+='<div class="hint">'+esc(t("noLow"))+'</div>';
   h+='<div class="btns"><button class="btn sm" type="button" data-act="goCount">'+esc(t("countNow"))+'</button></div></div>';
   if(drafts.length)h+='<div class="panel"><div class="panel-h"><h2>'+esc(t("pendingOrders"))+'</h2><div class="sp"></div><span class="pill warn num">'+drafts.length+'</span></div><div class="list">'+drafts.map(orderRow).join("")+'</div></div>';
-  h+=progressPanel(dueTasks(null),true,'<div class="empty">'+esc(t("noTasksMgr"))+'</div><div class="btns"><button class="btn sm" type="button" data-act="newTask">'+esc(t("addTask"))+'</button></div>');
+  h+=progressPanel(dueTasks(null),true,'<div class="empty">'+esc(t("noTasksMgr"))+'</div>');
+  h+='<div class="btns"><button class="btn sm" type="button" data-act="newTask">'+esc(t("addTask"))+'</button><button class="btn sm ghost" type="button" data-act="tab" data-tab="tasks">'+esc(t("manageTasks"))+'</button></div>';
   return h+'</div>'}
 
 function viewTasks(){var grp={daily:[],weekly:[],once:[]};D.tasks.forEach(function(x){(grp[x.freq]||grp.once).push(x)});
@@ -345,8 +349,8 @@ function viewTasks(){var grp={daily:[],weekly:[],once:[]};D.tasks.forEach(functi
     h+='<div class="panel"><div class="panel-h"><h2>'+esc(t(f==="weekly"?"weeklyF":f))+'</h2><div class="sp"></div><span class="lbl num">'+grp[f].length+'</span></div><div class="list">'+grp[f].map(function(x){return '<div class="row tap" role="button" tabindex="0" data-act="editTask" data-id="'+esc(x.id)+'"><div class="grow"><div class="t">'+esc(x.title)+'</div><div class="m">'+esc(x.assignee==="any"?t("anyone"):nameOf(x.assignee))+(x.freq==="once"&&x.dueDate?" · "+esc(fmtDateShort(x.dueDate)):"")+'</div></div>'+(x.active?"":'<span class="pill">'+esc(t("inactive"))+'</span>')+'</div>'}).join("")+'</div></div>'});
   return h+'</div>'}
 
-function orderRow(o){var st=o.status||"draft";var cls=st==="sent"?"ok":st==="cancelled"?"":"warn";
-  return '<div class="row"><div class="grow"><div class="t">'+esc(o.supplier||t("supplier"))+' · <span class="num">'+esc(fmtDateShort(o.date||""))+'</span></div><div class="m">'+esc(o.lines||"")+'</div>'+(isOwner()&&st==="draft"?'<div class="btns" style="margin-top:8px"><button class="btn sm ghost" type="button" data-act="orderSt" data-id="'+esc(o.id)+'" data-st="sent">'+esc(t("markSent"))+'</button><button class="btn sm danger" type="button" data-act="orderSt" data-id="'+esc(o.id)+'" data-st="cancelled">'+esc(t("markCancelled"))+'</button></div>':"")+'</div><span class="pill '+cls+'">'+esc(t("st_"+st))+'</span></div>'}
+function orderRow(o){var st=o.status||"draft";var cls=st==="sent"?"ok":st==="cancelled"?"":"warn";var shop=(supMap()[o.supplierId]||{}).method==="shopping";
+  return '<div class="row"><div class="grow"><div class="t">'+esc(o.supplier||t("supplier"))+' · <span class="num">'+esc(fmtDateShort(o.date||""))+'</span></div><div class="m">'+esc(o.lines||"")+'</div>'+(isOwner()&&st==="draft"?'<div class="btns" style="margin-top:8px"><button class="btn sm ghost" type="button" data-act="orderSt" data-id="'+esc(o.id)+'" data-st="sent">'+esc(t(shop?"markBought":"markSent"))+'</button><button class="btn sm danger" type="button" data-act="orderSt" data-id="'+esc(o.id)+'" data-st="cancelled">'+esc(t("markCancelled"))+'</button></div>':"")+'</div><span class="pill '+cls+'">'+esc(t(shop&&st==="sent"?"st_bought":shop&&st==="draft"?"st_tobuy":"st_"+st))+'</span></div>'}
 
 function viewInventory(){var segs=["count","items","suppliers","orders"];var sm=supMap();
   var h='<h1>'+esc(t("inventory"))+'</h1><p class="sub">'+esc(fmtDay(D.today))+'</p><div class="stack"><div class="seg" role="group">'+segs.map(function(s){return '<button type="button" data-act="inv" data-s="'+s+'" aria-pressed="'+(S.invTab===s)+'">'+esc(t(s))+'</button>'}).join("")+'</div>';
@@ -367,7 +371,57 @@ function viewInventory(){var segs=["count","items","suppliers","orders"];var sm=
     h+='<div class="btns"><button class="btn" type="button" data-act="editSup" data-id="">'+esc(t("addSupplier"))+'</button></div>';
     if(!sup.length)return h+'<div class="panel"><div class="empty">'+esc(t("noSuppliers"))+'</div></div></div>';
     return h+'<div class="panel"><div class="list">'+sup.map(function(s){var n=(D.items||[]).filter(function(i){return i.supplierId===s.id}).length;return '<div class="row tap" role="button" tabindex="0" data-act="editSup" data-id="'+esc(s.id)+'"><div class="grow"><div class="t">'+esc(s.name)+'</div><div class="m" dir="auto">'+esc([s.contact,s.email,s.phone].filter(Boolean).join(" · "))+'</div></div><span class="pill num">'+n+' '+esc(t("items"))+'</span></div>'}).join("")+'</div></div></div>'}
-  return h+'<div class="panel">'+((D.orders||[]).length?'<div class="list">'+D.orders.map(orderRow).join("")+'</div>':'<div class="empty">'+esc(t("noOrders"))+'</div>')+'</div></div>'}
+  var low=lowList(),lastC=(D.counts||[])[0];var bySup={};low.forEach(function(x){(bySup[x.it.supplierId||""]=bySup[x.it.supplierId||""]||[]).push(x)});
+  var sids=Object.keys(bySup).sort(function(a,b){var sa=sm[a]||{},sb=sm[b]||{};return ((sb.method==="shopping")-(sa.method==="shopping"))||String(sa.name).localeCompare(String(sb.name))});
+  h+='<div class="panel"><div class="panel-h"><h2>'+esc(t("shopNow"))+'</h2><div class="sp"></div>'+(lastC?'<span class="lbl">'+esc(t("basedOn",{d:fmtDateShort(lastC.date)}))+'</span>':"")+'</div>';
+  if(!lastC)h+='<div class="empty">'+esc(t("shopNoCount"))+'</div>';
+  else if(!sids.length)h+='<div class="empty">'+esc(t("shopEmpty"))+'</div>';
+  else sids.forEach(function(sid){var s=sm[sid]||{};var ord=(D.orders||[]).filter(function(o){return o.date===lastC.date&&o.supplierId===sid})[0];
+    h+='<div class="daygrp">'+esc(s.name||t("noSupplier"))+' · '+esc(s.method==="shopping"?t("mShop"):t("mEmail"))+'</div><div class="list">'+bySup[sid].map(function(x){
+      return '<div class="row"><div class="grow"><div class="t">'+esc(x.it.name)+'</div><div class="m num">'+esc(t("haveCol",{h:x.v,p:x.it.parLevel}))+'</div></div><span class="pill bad num">'+esc(t("needCol",{q:x.q}))+(x.it.unit?" "+esc(x.it.unit):"")+'</span></div>'}).join("")+'</div>'+(ord?orderRow(ord):"")});
+  h+='</div>';
+  var past=(D.orders||[]).filter(function(o){return !lastC||o.date!==lastC.date});
+  if(past.length)h+='<div class="panel"><div class="panel-h"><h2>'+esc(t("pastOrders"))+'</h2></div><div class="list">'+past.map(orderRow).join("")+'</div></div>';
+  return h+'</div>'}
+
+/* ---------- checklists ---------- */
+function logFor(itemId,slot){var id=itemId+"__"+D.today+"__"+slot;for(var i=0;i<(D.log||[]).length;i++)if(D.log[i].id===id)return D.log[i];return null}
+function clItems(list){return (D.checklists||[]).filter(function(c){return c.list===list})}
+function clRow(c,slot,locked){var r=logFor(c.id,slot);
+  var meta=r?esc(t("doneAt",{n:r.byName||nameOf(r.by),t:fmtTime(r.doneAt)})):"";
+  var pills=(c.par?'<span class="pill num">'+esc(c.par)+'</span>':"")+(c.photo&&!r?'<span class="pill warn">'+esc(t("photoNeeded"))+'</span>':"");
+  return '<div class="row'+(locked&&!r?'':' tap')+'" '+(locked&&!r?'aria-disabled="true" style="opacity:.55"':'role="button" tabindex="0" data-act="clItem" data-id="'+esc(c.id)+'" data-slot="'+esc(slot)+'"')+'><span class="check '+(r?"done":"")+'">'+(r?icons.check:"")+'</span><div class="grow"><div class="t">'+esc(c.item)+'</div>'+(meta?'<div class="m">'+meta+'</div>':"")+(r?thumbs(r.photos):"")+'</div><div class="btns">'+pills+'</div></div>'}
+function clPanel(items,slot,locked,note){var done=items.filter(function(c){return logFor(c.id,slot)}).length;
+  var h='<div class="panel"><div class="panel-h"><span class="lbl num">'+esc(t("progress",{a:done,b:items.length}))+'</span></div><div class="meter"><i style="width:'+(items.length?Math.round(done/items.length*100):0)+'%"></i></div>'+(note?'<div class="callout">'+esc(note)+'</div>':"");
+  if(!items.length)return h+'<div class="empty">'+esc(t("noLists"))+'</div></div>';
+  var sec=null;h+='<div class="list">';
+  items.forEach(function(c){if((c.section||"")!==sec){sec=c.section||"";if(sec)h+='<div class="daygrp">'+esc(sec)+'</div>'}h+=clRow(c,slot,locked)});
+  return h+'</div></div>'}
+function viewLists(){var l=S.clTab||"opening";
+  var h='<h1>'+esc(t("lists"))+'</h1><p class="sub">'+esc(fmtDay(D.today))+'</p><div class="stack"><div class="seg" role="group">'+["opening","closing"].map(function(k){return '<button type="button" data-act="clTab" data-s="'+k+'" aria-pressed="'+(l===k)+'">'+esc(t(k))+'</button>'}).join("")+'</div>';
+  return h+clPanel(clItems(l),"day",false,"")+'</div>'}
+function nowHM(){try{return new Intl.DateTimeFormat("en-GB",{timeZone:TZ,hour:"2-digit",minute:"2-digit",hour12:false}).format(new Date()).replace(/^24/,"00")}catch(e){return D.now}}
+function curSlot(){return nowHM()>=D.pmFrom?"pm":"am"}
+function slotOpen(sl){var n=nowHM();return sl==="am"?n<D.amUntil:(n>=D.pmFrom&&n<D.pmUntil)}
+function fmtHM(hm){var p=String(hm).split(":");var d=new Date(Date.UTC(2000,0,1,Number(p[0]),Number(p[1])));return d.toLocaleTimeString(loc(),{timeZone:"UTC",hour:"numeric",minute:"2-digit"})}
+function viewPrep(){var sl=S.prepSlot||curSlot();
+  var h='<h1>'+esc(t("prep"))+'</h1><p class="sub">'+esc(fmtDay(D.today))+'</p><div class="stack"><div class="seg" role="group">'+["am","pm"].map(function(k){return '<button type="button" data-act="prepSlot" data-s="'+k+'" aria-pressed="'+(sl===k)+'">'+esc(t(k))+'</button>'}).join("")+'</div>';
+  var locked=!slotOpen(sl);var n=nowHM();var note="";
+  if(sl==="am")note=locked?t("slotClosed",{t:fmtHM(D.amUntil)}):t("amWin",{t:fmtHM(D.amUntil)});
+  else note=n<D.pmFrom?t("slotOpensAt",{t:fmtHM(D.pmFrom)})+" · "+t("slotWin",{a:fmtHM(D.pmFrom),b:fmtHM(D.pmUntil)}):(locked?t("pmClosed",{t:fmtHM(D.pmUntil)}):t("slotWin",{a:fmtHM(D.pmFrom),b:fmtHM(D.pmUntil)}));
+  return h+clPanel(clItems("prep"),sl,locked,note)+'</div>'}
+function sheetCl(c,slot){var r=logFor(c.id,slot);
+  if(r){var can=r.by===D.me.email||isMgr();openSheet(c.item,'<div class="stack"><div class="callout">'+esc(t("doneAt",{n:r.byName||nameOf(r.by),t:fmtTime(r.doneAt)}))+'</div>'+thumbs(r.photos)+(can?'<div class="btns"><button class="btn ghost" type="button" data-act="unchk" data-id="'+esc(r.id)+'">'+esc(t("uncheck"))+'</button></div>':"")+'</div>');return}
+  if(!c.photo){doCheck(c,slot,[]);return}
+  var files=[];
+  openSheet(c.item,'<form class="f"><label class="camera" for="ph">'+icons.camera+'<span id="phLbl">'+esc(t("takePhoto"))+' *</span><input id="ph" type="file" accept="image/*" capture="environment"></label><div class="thumbs" id="phPrev"></div><button class="btn" type="submit">'+esc(t("markDone"))+'</button></form>',function(){
+    if(!files.length){toast(t("err_need_photo"));return false}
+    return Promise.all(files.map(compressToB64)).then(function(b){return doCheck(c,slot,b)})});
+  var inp=document.getElementById("ph");inp.addEventListener("change",function(){if(inp.files&&inp.files[0]){files=[inp.files[0]];var pv=document.getElementById("phPrev");pv.innerHTML="";var im=document.createElement("img");im.alt="";im.src=URL.createObjectURL(inp.files[0]);pv.appendChild(im);document.getElementById("phLbl").textContent=t("retake")}})}
+var checking={};
+function doCheck(c,slot,photos){var key=c.id+slot;if(checking[key])return Promise.resolve(false);checking[key]=1;
+  return api("check",{itemId:c.id,slot:slot,photos:photos}).then(function(r){D.log=(D.log||[]).concat([r]);render();return true})
+    .catch(function(e){toast(errMsg(e));if(String(e&&e.message)==="already_done")refresh();return false}).then(function(x){delete checking[key];return x})}
 
 function posLabel(p){return p?t("pos_"+p):""}
 function viewTeam(){var st=staffList().slice().sort(function(a,b){return ((b.active?1:0)-(a.active?1:0))||String(a.firstName).localeCompare(String(b.firstName))});
@@ -385,6 +439,8 @@ function viewHistory(){var mgr=isMgr();
   ev.forEach(function(e){if(e.date!==cur){cur=e.date;h+='<div class="daygrp">'+esc(fmtDay(cur))+'</div>'}
     if(e.type==="done")h+='<div class="row"><span class="check done">'+icons.check+'</span><div class="grow"><div class="t">'+esc(e.task||"")+'</div><div class="m">'+esc(e.byName||nameOf(e.by))+' · '+esc(fmtTime(e.doneAt))+(e.note?" · "+esc(e.note):"")+'</div>'+thumbs(e.photos)+'</div></div>';
     else if(e.type==="count")h+='<div class="row"><div class="grow"><div class="t">'+esc(t("evCount"))+'</div><div class="m num">'+esc(e.byName)+' · '+esc(fmtTime(e.at))+' · '+esc(t("evCountM",{n:e.n,l:e.low}))+'</div></div>'+(e.low?'<span class="pill bad num">'+e.low+'</span>':"")+'</div>';
+    else if(e.type==="list")h+='<div class="row"><span class="check '+(e.n>=e.total&&e.total?"done":"")+'">'+(e.n>=e.total&&e.total?icons.check:"")+'</span><div class="grow"><div class="t">'+esc(t("evList",{l:t(e.list),s:e.slot==="day"?"":t(e.slot)}).replace(/ · $/,""))+'</div><div class="m num">'+esc(t("evListM",{n:e.n,t:e.total,b:e.byName}))+' · '+esc(fmtTime(e.at))+'</div></div></div>';
+    else if(e.type==="check")h+='<div class="row"><span class="check done">'+icons.check+'</span><div class="grow"><div class="t">'+esc(e.item)+'</div><div class="m">'+esc(t(e.list))+(e.slot!=="day"?" · "+esc(t(e.slot)):"")+' · '+esc(fmtTime(e.doneAt))+'</div>'+thumbs(e.photos)+'</div></div>';
     else if(e.type==="reg")h+='<div class="row"><div class="grow"><div class="t">'+esc(e.byName)+' '+esc(t("evReg"))+'</div><div class="m">'+esc(posLabel(e.position))+'</div></div></div>';
     else h+='<div class="row"><div class="grow"><div class="t">'+esc(t("evOrder",{s:e.supplier||""}))+'</div><div class="m">'+esc(e.lines||"")+'</div></div><span class="pill">'+esc(t("st_"+(e.status||"draft")))+'</span></div>'});
   return h+'</div></div></div>'}
@@ -449,18 +505,20 @@ function sheetItem(id){var x=id?findBy(D.items,"id",id):{active:true};var cats={
   var body='<form class="f">'+fld("in",t("name"),x.name,"text","required")+'<div class="two">'+fld("ic",t("category"),x.category,"text",'list="cats"')+fld("iu",t("unit"),x.unit,"text",'placeholder="case, lb, bag…"')+'</div>'+
    '<datalist id="cats">'+Object.keys(cats).map(function(c){return '<option value="'+esc(c)+'">'}).join("")+'</datalist>'+
    '<div class="fld"><label for="is">'+esc(t("supplier"))+'</label><select id="is"><option value="">'+esc(t("noSupplier"))+'</option>'+(D.suppliers||[]).map(function(s){return '<option value="'+esc(s.id)+'" '+(x.supplierId===s.id?"selected":"")+'>'+esc(s.name)+'</option>'}).join("")+'</select></div>'+
-   '<div class="two">'+fld("imin",t("reorderAt"),x.minLevel,"number",'step="any" min="0" inputmode="decimal"')+fld("ipar",t("par"),x.parLevel,"number",'step="any" min="0" inputmode="decimal"')+'</div>'+
+   (isOwner()?'<div class="two">'+fld("imin",t("reorderAt"),x.minLevel,"number",'step="any" min="0" inputmode="decimal"')+fld("ipar",t("par"),x.parLevel,"number",'step="any" min="0" inputmode="decimal"')+'</div>':'<dl class="kv">'+kv(t("reorderAt"),String(x.minLevel===undefined?"":x.minLevel)||t("none"))+kv(t("par"),String(x.parLevel===undefined?"":x.parLevel)||t("none"))+'</dl><div class="hint">'+esc(t("parOwnerOnly"))+'</div>')+
    '<div class="days"><label><input type="checkbox" id="iac" '+(x.active!==false?"checked":"")+'>'+esc(t("active"))+'</label></div>'+
    '<div class="btns"><button class="btn" type="submit">'+esc(t("save"))+'</button>'+(id?'<button class="btn danger" type="button" data-act="del" data-a="deleteItem" data-id="'+esc(id)+'">'+esc(t("del"))+'</button>':"")+'</div></form>';
   openSheet(id?t("editItem"):t("addItem"),body,function(f){var g=function(s){return f.querySelector(s).value.trim()};if(!g("#in"))return false;
-    return run("saveItem",{id:id||"",name:g("#in"),category:g("#ic"),unit:g("#iu"),supplierId:g("#is"),minLevel:g("#imin"),parLevel:g("#ipar"),active:f.querySelector("#iac").checked},t("saved"))})}
+    var o=function(s){var e=f.querySelector(s);return e?e.value.trim():""};
+    return run("saveItem",{id:id||"",name:g("#in"),category:g("#ic"),unit:g("#iu"),supplierId:g("#is"),minLevel:o("#imin"),parLevel:o("#ipar"),active:f.querySelector("#iac").checked},t("saved"))})}
 
 function sheetSup(id){var x=id?findBy(D.suppliers,"id",id):{};
   var body='<form class="f">'+fld("sn",t("name"),x.name,"text","required")+fld("sc",t("contact"),x.contact)+'<div class="two">'+fld("se",t("email"),x.email,"email",'dir="ltr"')+fld("sp",t("phone"),x.phone,"tel",'dir="ltr"')+'</div>'+
+   '<div class="fld"><label for="sm">'+esc(t("method"))+'</label><select id="sm"><option value="email" '+(x.method!=="shopping"?"selected":"")+'>'+esc(t("mEmail"))+'</option><option value="shopping" '+(x.method==="shopping"?"selected":"")+'>'+esc(t("mShop"))+'</option></select></div>'+
    '<div class="fld"><label for="so">'+esc(t("orderNotes"))+'</label><textarea id="so" rows="3" placeholder="'+esc(t("orderNotesHint"))+'">'+esc(x.notes||"")+'</textarea></div>'+
    '<div class="btns"><button class="btn" type="submit">'+esc(t("save"))+'</button>'+(id?'<button class="btn danger" type="button" data-act="del" data-a="deleteSupplier" data-id="'+esc(id)+'">'+esc(t("del"))+'</button>':"")+'</div></form>';
   openSheet(id?t("editSupplier"):t("addSupplier"),body,function(f){var g=function(s){return f.querySelector(s).value.trim()};if(!g("#sn"))return false;
-    return run("saveSupplier",{id:id||"",name:g("#sn"),contact:g("#sc"),email:g("#se"),phone:g("#sp"),notes:g("#so")},t("saved"))})}
+    return run("saveSupplier",{id:id||"",name:g("#sn"),contact:g("#sc"),email:g("#se"),phone:g("#sp"),notes:g("#so"),method:g("#sm")},t("saved"))})}
 
 function kv(k,v){return v?'<dt>'+esc(k)+'</dt><dd>'+esc(v)+'</dd>':""}
 function sheetPerson(email){var s=findBy(staffList(),"email",email)||{};var title=((s.firstName||"")+" "+(s.lastName||"")).trim()||email;
@@ -493,6 +551,10 @@ document.addEventListener("click",function(e){var el=e.target.closest("[data-act
   case "undo":run("undo",{id:id},t("saved")).then(function(r){if(r!==false)closeSheet()});break;
   case "del":var key=el.getAttribute("data-a")+id;if(S.delArm!==key){S.delArm=key;el.textContent=t("confirmDel");return}
     run(el.getAttribute("data-a"),{id:id},t("saved")).then(function(r){if(r!==false)closeSheet()});break;
+  case "clTab":S.clTab=el.getAttribute("data-s");render(true);break;
+  case "prepSlot":S.prepSlot=el.getAttribute("data-s");render(true);break;
+  case "clItem":var ci=findBy(D.checklists,"id",id);if(ci)sheetCl(ci,el.getAttribute("data-slot"));break;
+  case "unchk":api("uncheck",{id:id}).then(function(){D.log=(D.log||[]).filter(function(x){return x.id!==id});closeSheet();render()}).catch(function(e){toast(errMsg(e))});break;
   case "newCode":if(S.delArm!=="newCode"){S.delArm="newCode";el.textContent=t("confirmCode");return}
     S.delArm=null;run("newJoinCode",{}).then(function(r){if(r&&r.joinCode)toast(t("codeChanged",{c:r.joinCode}))});break;
   case "signout":gs("signOut",token).catch(function(){});token=null;ls("bb_token",null);D=null;S.screen="login";S.codeSent=false;render(true);break;
@@ -509,7 +571,7 @@ document.addEventListener("submit",function(e){var f=e.target;if(f.closest("#she
   if(f.id==="emailForm"){S.loginEmail=f.querySelector("#le").value.trim().toLowerCase();ls("bb_email",S.loginEmail);busyBtn(f,true);sendCode().then(function(){busyBtn(f,false)})}
   if(f.id==="codeForm"){busyBtn(f,true);gs("verifyCode",S.loginEmail,f.querySelector("#lc").value).then(function(r){token=r.token;ls("bb_token",token);S.codeSent=false;return refresh()}).catch(function(e){busyBtn(f,false);toast(errMsg(e))})}
   if(f.id==="countForm"){var values={};for(var k in (S.countDraft||{})){var v=S.countDraft[k];if(v!==""&&!isNaN(Number(v)))values[k]=Number(v)}
-    busyBtn(f,true);run("saveCount",{values:values},t("countSaved")).then(function(){S.countDraft=null;render(true)})}
+    busyBtn(f,true);api("saveCount",{values:values}).then(function(r){toast(r&&r.mailed?t("listSent"):t("countSaved"));S.countDraft=null;return refresh()}).catch(function(e){toast(errMsg(e))}).then(function(){render(true)})}
   if(f.id==="regForm"){var g=function(n){return (f.elements[n]&&f.elements[n].value||"").trim()};
     var pub={firstName:g("firstName"),lastName:g("lastName"),phone:g("phone"),position:g("position"),startDate:g("startDate"),
       availability:Array.prototype.map.call(f.querySelectorAll('input[name="av"]:checked'),function(x){return x.value}),shift:g("shift"),langPref:g("langPref"),shirt:g("shirt"),foodCert:g("foodCert"),certExp:g("certExp")};
