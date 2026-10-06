@@ -170,7 +170,7 @@ freq:"Repeats",daily:"Every day",weeklyF:"Once a week",once:"One time",dueDate:"
 noTasksMgr:"No tasks yet. Add the opening, closing and weekly cleaning routines.",
 staff:"Staff",inactive:"Inactive",manager:"Manager access",managerHint:"Lets this person manage tasks and inventory and see the team.",
 inviteTitle:"Adding employees",inviteBody:"Send employees this page's link and the join code below. They sign in with their email and fill in the form once.",
-noStaff:"Nobody has registered yet.",regOn:"Registered",
+noStaff:"Nobody has registered yet.",newCode:"Change join code",confirmCode:"Tap again to change the code",codeChanged:"New join code: {c}",codeHint:"Employees already registered are not affected. Only new employees need the new code.",regOn:"Registered",
 hist7:"7 days",hist30:"30 days",histAll:"All",everyone:"Everyone",noHist:"Nothing recorded in this period yet.",
 evCount:"Inventory counted",evCountM:"{n} items, {l} low",evReg:"joined the team",evOrder:"Order prepared for {s}",
 owner:"Owner",myHist:"What I've done",byMe:"Your completed tasks"},
@@ -210,7 +210,7 @@ freq:"תדירות",daily:"כל יום",weeklyF:"פעם בשבוע",once:"חד-�
 noTasksMgr:"אין עדיין משימות. הוסיפו את שגרות הפתיחה, הסגירה והניקיון השבועי.",
 staff:"עובדים",inactive:"לא פעיל",manager:"הרשאת מנהל/ת",managerHint:"מאפשר לנהל משימות ומלאי ולראות את הצוות.",
 inviteTitle:"הוספת עובדים",inviteBody:"שלחו לעובדים את הלינק של הדף הזה ואת קוד ההצטרפות שלמטה. הם נכנסים עם המייל שלהם וממלאים את הטופס פעם אחת.",
-noStaff:"עדיין אף אחד לא נרשם.",regOn:"נרשם/ה",
+noStaff:"עדיין אף אחד לא נרשם.",newCode:"החלפת קוד הצטרפות",confirmCode:"לחצו שוב להחלפת הקוד",codeChanged:"קוד ההצטרפות החדש: {c}",codeHint:"עובדים שכבר רשומים לא מושפעים. רק עובדים חדשים יצטרכו את הקוד החדש.",regOn:"נרשם/ה",
 hist7:"7 ימים",hist30:"30 יום",histAll:"הכל",everyone:"כולם",noHist:"אין עדיין תיעוד בתקופה הזו.",
 evCount:"ספירת מלאי",evCountM:"{n} פריטים, {l} חסרים",evReg:"הצטרף/ה לצוות",evOrder:"הוכנה הזמנה ל-{s}",
 owner:"בעלים",myHist:"מה שביצעתי",byMe:"המשימות שסיימת"}
@@ -372,7 +372,7 @@ function viewInventory(){var segs=["count","items","suppliers","orders"];var sm=
 function posLabel(p){return p?t("pos_"+p):""}
 function viewTeam(){var st=staffList().slice().sort(function(a,b){return ((b.active?1:0)-(a.active?1:0))||String(a.firstName).localeCompare(String(b.firstName))});
   var h='<h1>'+esc(t("team"))+'</h1><p class="sub">'+esc(t("staff"))+' · <span class="num">'+st.filter(function(s){return s.active}).length+'</span></p><div class="stack">';
-  if(isOwner())h+='<div class="callout"><strong>'+esc(t("inviteTitle"))+'.</strong> '+esc(t("inviteBody"))+'<div style="margin-top:8px">'+esc(t("joinCode"))+': <span class="big num">'+esc(D.joinCode||"")+'</span></div></div>';
+  if(isOwner())h+='<div class="callout"><strong>'+esc(t("inviteTitle"))+'.</strong> '+esc(t("inviteBody"))+'<div style="margin-top:8px">'+esc(t("joinCode"))+': <span class="big num">'+esc(D.joinCode||"")+'</span></div><div class="btns" style="margin-top:8px"><button class="btn sm ghost" type="button" data-act="newCode">'+esc(t("newCode"))+'</button></div><div class="hint" style="margin-top:6px">'+esc(t("codeHint"))+'</div></div>';
   if(!st.length)return h+'<div class="panel"><div class="empty">'+esc(t("noStaff"))+'</div></div></div>';
   return h+'<div class="panel"><div class="list">'+st.map(function(s){return '<div class="row tap" role="button" tabindex="0" data-act="person" data-id="'+esc(s.email)+'"><div class="grow"><div class="t">'+esc((s.firstName||"")+" "+(s.lastName||""))+'</div><div class="m"><span dir="ltr">'+esc(s.phone||"")+'</span> · <span dir="ltr">'+esc(s.email)+'</span></div></div><span class="pill">'+esc(posLabel(s.position))+'</span>'+(s.role==="manager"?'<span class="pill ok">'+esc(t("manager"))+'</span>':"")+(s.active?"":'<span class="pill">'+esc(t("inactive"))+'</span>')+'</div>'}).join("")+'</div></div></div>'}
 
@@ -493,6 +493,8 @@ document.addEventListener("click",function(e){var el=e.target.closest("[data-act
   case "undo":run("undo",{id:id},t("saved")).then(function(r){if(r!==false)closeSheet()});break;
   case "del":var key=el.getAttribute("data-a")+id;if(S.delArm!==key){S.delArm=key;el.textContent=t("confirmDel");return}
     run(el.getAttribute("data-a"),{id:id},t("saved")).then(function(r){if(r!==false)closeSheet()});break;
+  case "newCode":if(S.delArm!=="newCode"){S.delArm="newCode";el.textContent=t("confirmCode");return}
+    S.delArm=null;run("newJoinCode",{}).then(function(r){if(r&&r.joinCode)toast(t("codeChanged",{c:r.joinCode}))});break;
   case "signout":gs("signOut",token).catch(function(){});token=null;ls("bb_token",null);D=null;S.screen="login";S.codeSent=false;render(true);break;
   case "otherEmail":S.codeSent=false;render(true);break;
   case "resend":sendCode();break;
